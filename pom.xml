@@ -6,14 +6,11 @@
 
     <groupId>ru.cft.focusstart</groupId>
     <artifactId>helloWorld</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <dependencies>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>task1</module>
+    </modules>
 
 
 </project>
