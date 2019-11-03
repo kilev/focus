@@ -1,11 +1,8 @@
 package ru.cft.focusstart.shapes;
 
-public abstract class Shape {
+import ru.cft.focusstart.Printable;
 
-    double area;
-    double perimeter;
-    String units;
-    String squareUnits;
-
-    abstract void calculateAllParam();
+public abstract class Shape implements Printable {
+    abstract double calculateArea();
+    abstract double calculatePerimeter();
 }

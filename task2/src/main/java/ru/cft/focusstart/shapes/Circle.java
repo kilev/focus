@@ -5,29 +5,38 @@ import ru.cft.focusstart.Utils.DecimalFormatUtils;
 public class Circle extends Shape {
 
     private static final String name = "Круг";
+    private static final int buildParamCount = 1;
     private final int radius;
-    private int diameter;
 
-    public Circle(int radius, String units, String squareUnits) {
+
+    public Circle(int radius) {
         this.radius = radius;
-        this.units = units;
-        this.squareUnits = squareUnits;
-        calculateAllParam();
     }
 
     @Override
-    void calculateAllParam() {
-        diameter = radius * 2;
-        perimeter = 2 * Math.PI * radius;
-        area = Math.PI * Math.pow(radius, 2);
+    double calculateArea(){
+        return Math.PI * Math.pow(radius, 2);
     }
 
     @Override
-    public String toString() {
+    double calculatePerimeter(){
+        return 2 * Math.PI * radius;
+    }
+
+    double calculateDiameter(){
+        return radius * 2;
+    }
+
+    @Override
+    public String getPrintText(String units, String squareUnits) {
         return "Тип фигуры: " + name + "\n"
-                + "Площадь: " + DecimalFormatUtils.format(area) + " " + squareUnits + " " + units + "\n"
-                + "Периметр: " + DecimalFormatUtils.format(perimeter) + " " + units + "\n"
+                + "Площадь: " + DecimalFormatUtils.format(calculateArea()) + " " + squareUnits + " " + units + "\n"
+                + "Периметр: " + DecimalFormatUtils.format(calculatePerimeter()) + " " + units + "\n"
                 + "Радиус: " + radius + " " + units + "\n"
-                + "Диаметр: " + diameter + " " + units;
+                + "Диаметр: " + calculateDiameter() + " " + units;
+    }
+
+    public static int getBuildParamCount() {
+        return buildParamCount;
     }
 }
