@@ -4,14 +4,13 @@ import java.util.Scanner;
 
 class UserQuestioner {
 
-    private UserQuestioner() {
-    }
-
     private static final int MIN_MULTIPLICATION_TABLE_SIZE = 1;
     private static final int MAX_MULTIPLICATION_TABLE_SIZE = 32;
     private static final String MESSAGE_TO_USER = "Введите размер таблицы("
             + MIN_MULTIPLICATION_TABLE_SIZE + "-" + MAX_MULTIPLICATION_TABLE_SIZE + "): ";
 
+    private UserQuestioner() {
+    }
 
     static int askUserForTableSize() {
         return askUserForInt(MESSAGE_TO_USER, MIN_MULTIPLICATION_TABLE_SIZE, MAX_MULTIPLICATION_TABLE_SIZE);
