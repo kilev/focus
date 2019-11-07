@@ -6,7 +6,7 @@ import static java.lang.Math.*;
 
 public class Triangle extends Shape {
 
-    private static final String name = "Треугольник";
+    private static final String NAME = "Треугольник";
     private static final char degreeChar = '°';
     private static final int buildParamCount = 3;
 
@@ -14,10 +14,22 @@ public class Triangle extends Shape {
     private final int sideB;
     private final int sideC;
 
-    public Triangle(int sideA, int sideB, int sideC) {
+    Triangle(int sideA, int sideB, int sideC) {
+        validateParam(sideA, sideB, sideC);
         this.sideA = sideA;
         this.sideB = sideB;
         this.sideC = sideC;
+    }
+
+    private void validateParam(int sideA, int sideB, int sideC) {
+        if (sideA <= 0 || sideB <= 0 || sideC <= 0) {
+            throw new IllegalArgumentException("Отрицательный или нулевой параметр");
+        }
+        if (sideA + sideB <= sideC
+                && sideA + sideC <= sideB
+                && sideB + sideC <= sideA) {
+            throw new IllegalArgumentException("Некорректные параметры треугольника.");
+        }
     }
 
     double calculateAngleA(){
@@ -45,15 +57,13 @@ public class Triangle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return "Тип фигуры: " + name + "\n"
-                + "Площадь: " + DecimalFormatUtils.format(calculateArea()) + " " + squareUnits + " " + units + "\n"
-                + "Периметр: " + DecimalFormatUtils.format(calculatePerimeter()) + " " + units + "\n"
+        return super.getBasePrintText(NAME, calculateArea(), calculatePerimeter(), units, squareUnits)
                 + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleA()) + degreeChar + "\n"
                 + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleB()) + degreeChar + "\n"
                 + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleC()) + degreeChar;
     }
 
-    public static int getBuildParamCount() {
+    static int getBuildParamCount() {
         return buildParamCount;
     }
 }

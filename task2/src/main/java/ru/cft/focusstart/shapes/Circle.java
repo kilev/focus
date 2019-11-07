@@ -1,42 +1,45 @@
 package ru.cft.focusstart.shapes;
 
-import ru.cft.focusstart.Utils.DecimalFormatUtils;
-
 public class Circle extends Shape {
 
-    private static final String name = "Круг";
+    private static final String NAME = "Круг";
     private static final int buildParamCount = 1;
     private final int radius;
 
 
-    public Circle(int radius) {
+    Circle(int radius) {
+        validateParam(radius);
         this.radius = radius;
     }
 
+    private void validateParam(int radius) {
+        if (radius <= 0) {
+            throw new IllegalArgumentException("Отрицательный или нулевой параметр");
+        }
+    }
+
     @Override
-    double calculateArea(){
+    double calculateArea() {
         return Math.PI * Math.pow(radius, 2);
     }
 
     @Override
-    double calculatePerimeter(){
+    double calculatePerimeter() {
         return 2 * Math.PI * radius;
     }
 
-    double calculateDiameter(){
+    double calculateDiameter() {
         return radius * 2;
     }
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return "Тип фигуры: " + name + "\n"
-                + "Площадь: " + DecimalFormatUtils.format(calculateArea()) + " " + squareUnits + " " + units + "\n"
-                + "Периметр: " + DecimalFormatUtils.format(calculatePerimeter()) + " " + units + "\n"
+        return super.getBasePrintText(NAME, calculateArea(), calculatePerimeter(), units, squareUnits)
                 + "Радиус: " + radius + " " + units + "\n"
                 + "Диаметр: " + calculateDiameter() + " " + units;
     }
 
-    public static int getBuildParamCount() {
+    static int getBuildParamCount() {
         return buildParamCount;
     }
 }
