@@ -7,7 +7,7 @@ import static java.lang.Math.*;
 public class Triangle extends Shape {
 
     private static final String NAME = "Треугольник";
-    private static final char degreeChar = '°';
+    private static final char DEGREE_CHAR = '°';
 
     private final int sideA;
     private final int sideB;
@@ -57,9 +57,9 @@ public class Triangle extends Shape {
     @Override
     public String getPrintText(String units, String squareUnits) {
         return super.getBasePrintText(NAME, units, squareUnits)
-                + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleA()) + degreeChar + "\n"
-                + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleB()) + degreeChar + "\n"
-                + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleC()) + degreeChar;
+                + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleA()) + DEGREE_CHAR + "\n"
+                + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleB()) + DEGREE_CHAR + "\n"
+                + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleC()) + DEGREE_CHAR;
     }
 
 }
