@@ -1,7 +1,7 @@
-package ru.cft.focusstart.writers;
+package ru.cft.focusstart.writer;
 
 import ru.cft.focusstart.Printable;
-import ru.cft.focusstart.exceptions.ShapeFileWriteException;
+import ru.cft.focusstart.exception.ShapeFileWriteException;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

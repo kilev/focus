@@ -1,4 +1,4 @@
-package ru.cft.focusstart.shapes;
+package ru.cft.focusstart.shape;
 
 public enum ShapeType {
     CIRCLE, RECTANGLE, TRIANGLE

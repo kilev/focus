@@ -1,11 +1,9 @@
-package ru.cft.focusstart.shapes;
+package ru.cft.focusstart.shape;
 
 public class Circle extends Shape {
 
     private static final String NAME = "Круг";
-    private static final int buildParamCount = 1;
     private final int radius;
-
 
     Circle(int radius) {
         validateParam(radius);
@@ -34,12 +32,9 @@ public class Circle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, calculateArea(), calculatePerimeter(), units, squareUnits)
+        return super.getBasePrintText(NAME, units, squareUnits)
                 + "Радиус: " + radius + " " + units + "\n"
                 + "Диаметр: " + calculateDiameter() + " " + units;
     }
 
-    static int getBuildParamCount() {
-        return buildParamCount;
-    }
 }

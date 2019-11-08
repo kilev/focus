@@ -1,11 +1,10 @@
-package ru.cft.focusstart.shapes;
+package ru.cft.focusstart.shape;
 
 import ru.cft.focusstart.Utils.DecimalFormatUtils;
 
 public class Rectangle extends Shape {
 
     private static final String NAME = "Прямоугольник";
-    private static final int buildParamCount = 2;
 
     private final int width;
     private final int length;
@@ -38,13 +37,10 @@ public class Rectangle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, calculateArea(), calculatePerimeter(), units, squareUnits)
+        return super.getBasePrintText(NAME, units, squareUnits)
                 + "Длина диагонали: " + DecimalFormatUtils.format(calculateDiagonalLength()) + " " + units + "\n"
                 + "Длина: " + length + " " + units + "\n"
                 + "Ширина: " + width + " " + units;
     }
 
-    static int getBuildParamCount() {
-        return buildParamCount;
-    }
 }

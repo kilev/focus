@@ -1,4 +1,4 @@
-package ru.cft.focusstart.exceptions;
+package ru.cft.focusstart.exception;
 
 public class ShapeFileWriteException extends RuntimeException {
 

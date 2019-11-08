@@ -1,10 +1,10 @@
-package ru.cft.focusstart.shapes;
+package ru.cft.focusstart.shape;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.cft.focusstart.ParamReader;
-import ru.cft.focusstart.exceptions.ShapeCreationException;
+import ru.cft.focusstart.exception.ShapeCreationException;
 
 public class ShapeBuilder {
 
@@ -13,7 +13,7 @@ public class ShapeBuilder {
     private ShapeBuilder() {
     }
 
-    public static Shape Build(ParamReader paramReader) {
+    public static Shape build(ParamReader paramReader) {
         try {
             ShapeParamParser parser = new ShapeParamParser(paramReader.getShapeType(), paramReader.getParam());
 

@@ -3,27 +3,27 @@ package ru.cft.focusstart;
 import com.beust.jcommander.JCommander;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.cft.focusstart.exceptions.ParamFileReadException;
-import ru.cft.focusstart.exceptions.ShapeCreationException;
-import ru.cft.focusstart.exceptions.ShapeFileWriteException;
-import ru.cft.focusstart.shapes.ShapeBuilder;
-import ru.cft.focusstart.writers.WriterFactory;
+import ru.cft.focusstart.exception.ParamFileReadException;
+import ru.cft.focusstart.exception.ShapeCreationException;
+import ru.cft.focusstart.exception.ShapeFileWriteException;
+import ru.cft.focusstart.shape.ShapeBuilder;
+import ru.cft.focusstart.writer.WriterFactory;
 
 public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    private static final String units = "мм";
-    private static final String squareUnits = "кв.";
+    private static final String UNITS = "мм";
+    private static final String SQUARE_UNITS = "кв.";
     private static final String PROGRAM_END = "Программа завершена.";
-    private static final Args parameters = new Args();
+    private static final Args PARAMETERS = new Args();
 
     public static void main(String[] args) {
         logger.info("Программа запущена.");
         parseArgs(args);
         try {
-            WriterFactory.create(parameters.getWriteType())
-                    .write(ShapeBuilder.Build(new ShapeParamFileReader()), units, squareUnits);
+            WriterFactory.create(PARAMETERS.getWriteType())
+                    .write(ShapeBuilder.build(new ShapeParamFileReader()), UNITS, SQUARE_UNITS);
             System.out.println("Программа отработала корректно.");
         } catch (ParamFileReadException | ShapeCreationException | ShapeFileWriteException | UnsupportedOperationException e) {
             System.out.println("Программа отработала с ошибкой: " + e.getMessage());
@@ -37,7 +37,7 @@ public class Main {
     private static void parseArgs(String[] args) {
         try {
             JCommander.newBuilder()
-                    .addObject(parameters)
+                    .addObject(PARAMETERS)
                     .build()
                     .parse(args);
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package ru.cft.focusstart.shapes;
+package ru.cft.focusstart.shape;
 
 import ru.cft.focusstart.Utils.DecimalFormatUtils;
 
@@ -8,7 +8,6 @@ public class Triangle extends Shape {
 
     private static final String NAME = "Треугольник";
     private static final char degreeChar = '°';
-    private static final int buildParamCount = 3;
 
     private final int sideA;
     private final int sideB;
@@ -57,13 +56,10 @@ public class Triangle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, calculateArea(), calculatePerimeter(), units, squareUnits)
+        return super.getBasePrintText(NAME, units, squareUnits)
                 + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleA()) + degreeChar + "\n"
                 + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleB()) + degreeChar + "\n"
                 + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleC()) + degreeChar;
     }
 
-    static int getBuildParamCount() {
-        return buildParamCount;
-    }
 }

@@ -1,7 +1,7 @@
 package ru.cft.focusstart;
 
 import com.beust.jcommander.Parameter;
-import ru.cft.focusstart.writers.WriterType;
+import ru.cft.focusstart.writer.WriterType;
 
 class Args {
 

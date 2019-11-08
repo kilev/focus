@@ -1,4 +1,4 @@
-package ru.cft.focusstart.writers;
+package ru.cft.focusstart.writer;
 
 public class WriterFactory {
 
