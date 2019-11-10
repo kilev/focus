@@ -1,13 +1,12 @@
 package ru.cft.focusstart;
 
-import ru.cft.focusstart.views.MineSweeperGUI;
+import ru.cft.focusstart.view.MinesweeperGUI;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        MineSweeperGUI gui = new MineSweeperGUI();
+        MinesweeperGUI gui = new MinesweeperGUI();
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gui.setVisible(true);
     }
 }
