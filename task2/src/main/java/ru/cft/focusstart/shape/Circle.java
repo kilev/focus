@@ -1,16 +1,18 @@
 package ru.cft.focusstart.shape;
 
+import ru.cft.focusstart.Utils.DecimalFormatUtils;
+
 public class Circle extends Shape {
 
     private static final String NAME = "Круг";
-    private final int radius;
+    private final double radius;
 
-    Circle(int radius) {
+    Circle(double radius) {
         validateParam(radius);
         this.radius = radius;
     }
 
-    private void validateParam(int radius) {
+    private void validateParam(double radius) {
         if (radius <= 0) {
             throw new IllegalArgumentException("Отрицательный или нулевой параметр");
         }
@@ -32,9 +34,9 @@ public class Circle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, units, squareUnits)
-                + "Радиус: " + radius + " " + units + "\n"
-                + "Диаметр: " + calculateDiameter() + " " + units;
+        return getBasePrintText(NAME, units, squareUnits)
+                + "Радиус: " + DecimalFormatUtils.format(radius) + " " + units + System.lineSeparator()
+                + "Диаметр: " + DecimalFormatUtils.format(calculateDiameter()) + " " + units;
     }
 
 }

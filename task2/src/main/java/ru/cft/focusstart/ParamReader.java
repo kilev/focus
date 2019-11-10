@@ -1,8 +1,10 @@
 package ru.cft.focusstart;
 
+import java.util.List;
+
 public interface ParamReader {
 
     String getShapeType();
 
-    String[] getParam();
+    List<String> getParam();
 }

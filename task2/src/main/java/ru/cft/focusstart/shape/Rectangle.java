@@ -6,17 +6,17 @@ public class Rectangle extends Shape {
 
     private static final String NAME = "Прямоугольник";
 
-    private final int width;
-    private final int length;
+    private final double width;
+    private final double length;
 
-    Rectangle(int length1, int length2) {
-        validateParam(length1, length2);
-        length = Math.max(length1, length2);
-        width = Math.min(length1, length2);
+    Rectangle(double sideA, double sideB) {
+        validateParam(sideA, sideB);
+        length = Math.max(sideA, sideB);
+        width = Math.min(sideA, sideB);
     }
 
-    private void validateParam(int length1, int length2) {
-        if (length1 <= 0 || length2 <= 0) {
+    private void validateParam(double sizeA, double sizeB) {
+        if (sizeA <= 0 || sizeB <= 0) {
             throw new IllegalArgumentException("Отрицательный или нулевой параметр");
         }
     }
@@ -37,10 +37,10 @@ public class Rectangle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, units, squareUnits)
-                + "Длина диагонали: " + DecimalFormatUtils.format(calculateDiagonalLength()) + " " + units + "\n"
-                + "Длина: " + length + " " + units + "\n"
-                + "Ширина: " + width + " " + units;
+        return getBasePrintText(NAME, units, squareUnits)
+                + "Длина диагонали: " + DecimalFormatUtils.format(calculateDiagonalLength()) + " " + units + System.lineSeparator()
+                + "Длина: " + DecimalFormatUtils.format(length) + " " + units + System.lineSeparator()
+                + "Ширина: " + DecimalFormatUtils.format(width) + " " + units;
     }
 
 }

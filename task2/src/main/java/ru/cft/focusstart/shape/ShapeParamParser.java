@@ -1,26 +1,33 @@
 package ru.cft.focusstart.shape;
 
+import ru.cft.focusstart.exception.ParamParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class ShapeParamParser {
+public class ShapeParamParser {
 
     private final ShapeType parsedType;
-    private final List<Integer> parsedParam = new ArrayList<>();
+    private final List<Double> parsedParam = new ArrayList<>();
 
-    ShapeParamParser(String shapeTypeStr, String[] paramStr) {
-        parsedType = ShapeType.valueOf(shapeTypeStr);
+    public ShapeParamParser(String shapeTypeStr, List<String> paramStr) {
+        try {
+            parsedType = ShapeType.valueOf(shapeTypeStr);
 
-        for (int i = 0; i < paramStr.length; i++) {
-            parsedParam.add(Integer.parseInt(paramStr[i]));
+            for (String param : paramStr) {
+                parsedParam.add(Double.parseDouble(param));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new ParamParseException("Не удалось распознать аргументы фигуры.", e);
         }
+
     }
 
-    ShapeType getShapeType() {
+    public ShapeType getShapeType() {
         return parsedType;
     }
 
-    List<Integer> getParam() {
+    public List<Double> getParam() {
         return parsedParam;
     }
 }

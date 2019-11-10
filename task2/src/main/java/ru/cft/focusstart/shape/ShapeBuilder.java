@@ -3,8 +3,9 @@ package ru.cft.focusstart.shape;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.cft.focusstart.ParamReader;
 import ru.cft.focusstart.exception.ShapeCreationException;
+
+import java.util.List;
 
 public class ShapeBuilder {
 
@@ -13,22 +14,20 @@ public class ShapeBuilder {
     private ShapeBuilder() {
     }
 
-    public static Shape build(ParamReader paramReader) {
+    public static Shape build(ShapeType shapeType, List<Double> param) {
         try {
-            ShapeParamParser parser = new ShapeParamParser(paramReader.getShapeType(), paramReader.getParam());
-
-            switch (parser.getShapeType()) {
+            switch (shapeType) {
                 case CIRCLE:
-                    return new Circle(parser.getParam().get(0));
+                    return new Circle(param.get(0));
                 case RECTANGLE:
-                    return new Rectangle(parser.getParam().get(0),
-                            parser.getParam().get(1));
+                    return new Rectangle(param.get(0),
+                            param.get(1));
                 case TRIANGLE:
-                    return new Triangle(parser.getParam().get(0),
-                            parser.getParam().get(1),
-                            parser.getParam().get(2));
+                    return new Triangle(param.get(0),
+                            param.get(1),
+                            param.get(2));
                 default:
-                    throw new UnsupportedOperationException("Неподдерживаемый тип фигуры: " + parser.getShapeType());
+                    throw new UnsupportedOperationException("Неподдерживаемый тип фигуры: " + shapeType);
             }
         } catch (Exception e) {
             ShapeCreationException exception = new ShapeCreationException("Не удалось создать фигуру: " + e.getMessage(), e);

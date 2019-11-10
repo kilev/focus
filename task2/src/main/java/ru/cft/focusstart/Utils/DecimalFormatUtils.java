@@ -4,8 +4,8 @@ import java.text.DecimalFormat;
 
 public class DecimalFormatUtils {
 
-    private static final String format = "#0.00";
-    private static final DecimalFormat formatter = new DecimalFormat(format);
+    private static final String FORMAT = "#0.00";
+    private static final DecimalFormat formatter = new DecimalFormat(FORMAT);
 
     private DecimalFormatUtils() {
     }

@@ -9,18 +9,18 @@ public class Triangle extends Shape {
     private static final String NAME = "Треугольник";
     private static final char DEGREE_CHAR = '°';
 
-    private final int sideA;
-    private final int sideB;
-    private final int sideC;
+    private final double sideA;
+    private final double sideB;
+    private final double sideC;
 
-    Triangle(int sideA, int sideB, int sideC) {
+    Triangle(double sideA, double sideB, double sideC) {
         validateParam(sideA, sideB, sideC);
         this.sideA = sideA;
         this.sideB = sideB;
         this.sideC = sideC;
     }
 
-    private void validateParam(int sideA, int sideB, int sideC) {
+    private void validateParam(double sideA, double sideB, double sideC) {
         if (sideA <= 0 || sideB <= 0 || sideC <= 0) {
             throw new IllegalArgumentException("Отрицательный или нулевой параметр");
         }
@@ -31,16 +31,8 @@ public class Triangle extends Shape {
         }
     }
 
-    double calculateAngleA(){
+    private double calculateAngle(double sideA, double sideB, double sideC) {
         return acos((pow(sideB, 2) + pow(sideC, 2) - pow(sideA, 2)) / (2 * sideB * sideC)) * 180 / PI;
-    }
-
-    double calculateAngleB(){
-        return acos((pow(sideA, 2) + pow(sideC, 2) - pow(sideB, 2)) / (2 * sideA * sideC)) * 180 / PI;
-    }
-
-    double calculateAngleC(){
-        return acos((pow(sideB, 2) + pow(sideA, 2) - pow(sideC, 2)) / (2 * sideB * sideA)) * 180 / PI;
     }
 
     @Override
@@ -56,10 +48,10 @@ public class Triangle extends Shape {
 
     @Override
     public String getPrintText(String units, String squareUnits) {
-        return super.getBasePrintText(NAME, units, squareUnits)
-                + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleA()) + DEGREE_CHAR + "\n"
-                + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleB()) + DEGREE_CHAR + "\n"
-                + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngleC()) + DEGREE_CHAR;
+        return getBasePrintText(NAME, units, squareUnits)
+                + "Длина стороны: " + sideA + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngle(sideA, sideB, sideC)) + DEGREE_CHAR + System.lineSeparator()
+                + "Длина стороны: " + sideB + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngle(sideB, sideA, sideC)) + DEGREE_CHAR + System.lineSeparator()
+                + "Длина стороны: " + sideC + " " + units + ", противолежащий угол: " + DecimalFormatUtils.format(calculateAngle(sideC, sideA, sideB)) + DEGREE_CHAR;
     }
 
 }
