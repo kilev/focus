@@ -1,4 +1,4 @@
-package ru.cft.focusstart.view.IconService;
+package ru.cft.focusstart.view.iconService.iconV1;
 
 public class IconReadException extends RuntimeException {
 
