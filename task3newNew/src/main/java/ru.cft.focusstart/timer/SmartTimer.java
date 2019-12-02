@@ -9,14 +9,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MyTimer implements ITimer, Observer<GameStateChangeDto> {
+public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
 
     private final IObserverManager observerManager;
     private Timer timer;
 
     private AtomicInteger time = new AtomicInteger(0);
 
-    public MyTimer(IObserverManager observerManager) {
+    public SmartTimer(IObserverManager observerManager) {
         this.observerManager = observerManager;
         observerManager.addObserver(GameStateChangeDto.class, this);
     }

@@ -109,6 +109,7 @@ public class ModelService implements IModelService {
         cell.open();
         if (cell.getCellType() == CellType.BOOMED) {
             gameStateModel.setGameState(GameStateType.LOSE);
+            openLostBombs();
             return;
         }
         if (gameIsWin()) {
@@ -160,6 +161,14 @@ public class ModelService implements IModelService {
                 neighbors.forEach(this::openCell);
             }
         }
+    }
+
+    private void openLostBombs() {
+        Arrays.stream(gameField)
+                .flatMap(Arrays::stream)
+                .filter(CellModel::getBomb)
+                .filter(cell -> cell.getCellType() == CellType.CLOSED)
+                .forEach(CellModel::open);
     }
 
 }

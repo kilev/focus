@@ -6,6 +6,7 @@ import ru.cft.focusstart.observer.IObserverManager;
 import ru.cft.focusstart.record.IRecordProvider;
 import ru.cft.focusstart.view.content.ContentManager;
 import ru.cft.focusstart.view.content.menu.MenuManager;
+import ru.cft.focusstart.view.pane.UserNamePane;
 import ru.cft.focusstart.view.window.MainWindow;
 
 public class View implements IView {
@@ -20,6 +21,6 @@ public class View implements IView {
 
     @Override
     public String askUserForName() {
-        return "";
+        return UserNamePane.askUser();
     }
 }

@@ -13,7 +13,7 @@ import ru.cft.focusstart.record.RecordFileHandler;
 import ru.cft.focusstart.record.RecordProvider;
 import ru.cft.focusstart.record.RecordWriter;
 import ru.cft.focusstart.timer.ITimer;
-import ru.cft.focusstart.timer.MyTimer;
+import ru.cft.focusstart.timer.SmartTimer;
 import ru.cft.focusstart.view.IView;
 import ru.cft.focusstart.view.View;
 
@@ -22,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
         IObserverManager observerManager = new ObserverManager();
         IDifficultyManager difficultyManager = new DifficultyManager();
-        ITimer timer = new MyTimer(observerManager);
+        ITimer timer = new SmartTimer(observerManager);
         IModelService modelService = new ModelService(observerManager, timer);
         IRecordHandler recordHandler = new RecordFileHandler();
         IView view = new View(observerManager, new ModelController(modelService), new DifficultyController(difficultyManager), new RecordProvider(recordHandler));

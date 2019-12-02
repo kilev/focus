@@ -63,9 +63,9 @@ public class MenuManager {
             StringBuilder stringBuilder = new StringBuilder();
             for (Record record : recordProvider.getRecords()) {
                 if (record.getScore() == null) {
-                    stringBuilder.append("- -");
+                    stringBuilder.append("- - ");
                 } else {
-                    stringBuilder.append(record.getScore()).append(record.getPlayerName());
+                    stringBuilder.append(record.getScore()).append(" ").append(record.getPlayerName()).append(" ");
                 }
                 stringBuilder.append(record.getDifficulty()).append(System.lineSeparator());
             }
