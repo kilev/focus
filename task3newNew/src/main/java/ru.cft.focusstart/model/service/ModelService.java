@@ -114,6 +114,7 @@ public class ModelService implements IModelService {
         }
         if (gameIsWin()) {
             gameStateModel.setGameState(GameStateType.WIN);
+            return;
         }
         checkToOpenNeighbors(cell);
     }
