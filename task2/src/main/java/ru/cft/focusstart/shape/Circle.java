@@ -12,12 +12,6 @@ public class Circle extends Shape {
         this.radius = radius;
     }
 
-    private void validateParam(double radius) {
-        if (radius <= 0) {
-            throw new IllegalArgumentException("Отрицательный или нулевой параметр");
-        }
-    }
-
     @Override
     double calculateArea() {
         return Math.PI * Math.pow(radius, 2);
@@ -37,6 +31,12 @@ public class Circle extends Shape {
         return getBasePrintText(NAME, units, squareUnits)
                 + "Радиус: " + DecimalFormatUtils.format(radius) + " " + units + System.lineSeparator()
                 + "Диаметр: " + DecimalFormatUtils.format(calculateDiameter()) + " " + units;
+    }
+
+    private void validateParam(double radius) {
+        if (radius <= 0) {
+            throw new IllegalArgumentException("Отрицательный или нулевой параметр");
+        }
     }
 
 }

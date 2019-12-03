@@ -12,7 +12,7 @@ public class WriterFactory {
             case CONSOLE:
                 return new ShapeConsoleWriter();
             default:
-                throw new UnsupportedOperationException("Неподдерживаемый тип печати: " + writeType);
+                throw new UnsupportedOperationException("Неподдерживаемый тип вывода информации: " + writeType);
         }
     }
 }

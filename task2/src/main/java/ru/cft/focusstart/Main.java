@@ -46,7 +46,7 @@ public class Main {
                     .build()
                     .parse(args);
         } catch (IllegalArgumentException e) {
-            System.out.println("Некоректные аргументы командной строки, выбраны параметры поумолчанию.");
+            System.out.println("Некоректные аргументы командной строки, выбраны параметры по умолчанию.");
         }
     }
 
