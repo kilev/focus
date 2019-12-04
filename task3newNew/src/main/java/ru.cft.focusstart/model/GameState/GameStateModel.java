@@ -7,14 +7,12 @@ import ru.cft.focusstart.difficulty.Difficulty;
 import ru.cft.focusstart.dto.GameStateChangeDto;
 import ru.cft.focusstart.observer.IObserverManager;
 import ru.cft.focusstart.observer.Observered;
-import ru.cft.focusstart.timer.ITimer;
 
 @Getter
 @RequiredArgsConstructor
-public class GameStateModel implements Observered<GameStateChangeDto> {
+public class GameStateModel implements Observered {
 
     private final IObserverManager observerManager;
-    private final ITimer timer;
 
     @Setter
     private Difficulty difficulty;
@@ -25,9 +23,8 @@ public class GameStateModel implements Observered<GameStateChangeDto> {
         sendDto();
     }
 
-
     public void sendDto() {
-        observerManager.notifyObservers(new GameStateChangeDto(gameStateType, difficulty, timer.getTime()));
+        observerManager.notifyObservers(new GameStateChangeDto(gameStateType, difficulty));
 
     }
 }

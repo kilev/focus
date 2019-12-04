@@ -1,14 +1,6 @@
 package ru.cft.focusstart.observer;
 
-import ru.cft.focusstart.dto.EventDto;
-
-public interface Observered<T extends EventDto> {
+public interface Observered {
 
     void sendDto();
-
-//    GlobalGateWay getGlobalGateWay();
-//
-//    default void sendNotify(T dto) {
-//        getGlobalGateWay().notifyObservers(dto);
-//    }
 }

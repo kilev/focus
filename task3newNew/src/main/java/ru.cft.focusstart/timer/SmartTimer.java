@@ -14,6 +14,7 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
     private final IObserverManager observerManager;
     private Timer timer;
 
+    private long systemNanoTime;
     private AtomicInteger time = new AtomicInteger(0);
 
     public SmartTimer(IObserverManager observerManager) {
@@ -24,7 +25,10 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
     class timeTask extends TimerTask implements Runnable {
         @Override
         public void run() {
-            observerManager.notifyObservers(new TimeChangeDto(time.getAndIncrement()));
+            if (System.nanoTime() - 1000000000 > systemNanoTime) {
+                systemNanoTime = System.nanoTime();
+                observerManager.notifyObservers(new TimeChangeDto(time.incrementAndGet()));
+            }
         }
     }
 
@@ -47,7 +51,8 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
 
     private void reset() {
         time.set(0);
+        systemNanoTime = System.nanoTime();
         timer = new Timer();
-        timer.schedule(new timeTask(), 0, 1000);
+        timer.schedule(new timeTask(), 0, 500);
     }
 }

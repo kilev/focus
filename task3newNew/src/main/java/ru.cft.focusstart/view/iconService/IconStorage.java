@@ -1,5 +1,8 @@
 package ru.cft.focusstart.view.iconService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.IOException;
@@ -20,10 +23,14 @@ public enum IconStorage {
     TIME("time"),
     ;
 
+    public static final String OPENED_NUMBER_PREFIX = "OPENED_";
+
+    private static final Logger logger = LoggerFactory.getLogger(IconStorage.class);
+
+    private static final String READ_ICON_ERROR_TEXT = "Ощибка чтения иконок";
+
     private static final String PACKAGE = "icon/";
     private static final String ICON_FORMAT = ".png";
-
-    public static final String OPENED_NUMBER_PREFIX = "OPENED_";
 
     private final ImageIcon imageIcon;
 
@@ -35,7 +42,7 @@ public enum IconStorage {
         try {
             return new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource(PACKAGE + path + ICON_FORMAT)));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(READ_ICON_ERROR_TEXT, e);
         }
         return null;
     }

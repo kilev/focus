@@ -1,19 +1,37 @@
 package ru.cft.focusstart.record;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.cft.focusstart.difficulty.Difficulty;
+import ru.cft.focusstart.view.iconService.IconStorage;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RecordFileHandler implements IRecordHandler {
 
-    private final static File FILE = new File("records.txt");
+    private static final Logger logger = LoggerFactory.getLogger(IconStorage.class);
 
-    private final static Integer RECORDS_COUNT = 3;
+    private static final String FILE_READ_ERROR_TEXT = "Ошибка чтения.";
+    private static final String FILE_WRITE_ERROR_TEXT = "Ошибка записи.";
 
-    private final static List<Difficulty> difficulties = new ArrayList<>(Arrays.asList(Difficulty.EAZY, Difficulty.MEDIUM, Difficulty.HARD));
+    private final static String FILE_PATH = "records.txt";
+
+    private final static int RECORDS_COUNT = 3;
+
+    private final static List<Difficulty> DIFFICULTIES = new ArrayList<>(Arrays.asList(Difficulty.EAZY, Difficulty.MEDIUM, Difficulty.HARD));
+
+    private final static Type RECORDS_TYPE = new TypeToken<List<Record>>() {
+    }.getType();
 
     @Override
     public List<Record> getRecords() {
@@ -27,24 +45,22 @@ public class RecordFileHandler implements IRecordHandler {
 
     private List<Record> readRecordsFromFile() {
         List<Record> records = new ArrayList<>();
-        if (!FILE.exists()) {
+        if (!new File(FILE_PATH).exists()) {
             records = getZeroRecords();
             writeRecordsToFile(records);
             return records;
         }
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILE))) {
-            while (true) {
-                Record record = (Record) objectInputStream.readObject();
-                records.add(record);
-            }
-        } catch (ClassCastException | ClassNotFoundException | IOException ignore) {
-            return records;
+        try (JsonReader reader = new JsonReader(new FileReader(FILE_PATH))) {
+            records = new Gson().fromJson(reader, RECORDS_TYPE);
+        } catch (IOException e) {
+            logger.error(FILE_READ_ERROR_TEXT, e);
         }
+        return records;
     }
 
     private List<Record> getZeroRecords() {
         List<Record> zeroRecords = new ArrayList<>();
-        difficulties.forEach(difficulty -> {
+        DIFFICULTIES.forEach(difficulty -> {
             for (int i = 0; i < RECORDS_COUNT; i++) {
                 zeroRecords.add(new Record(null, difficulty, null));
             }
@@ -53,14 +69,11 @@ public class RecordFileHandler implements IRecordHandler {
     }
 
     private void writeRecordsToFile(List<Record> records) {
-
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILE))) {
-            for (Record record : records) {
-                objectOutputStream.writeObject(record);
-            }
-            objectOutputStream.flush();
+        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            new Gson().toJson(records, writer);
+            writer.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(FILE_WRITE_ERROR_TEXT, e);
         }
     }
 

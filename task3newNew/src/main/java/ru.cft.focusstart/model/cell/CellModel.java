@@ -10,7 +10,7 @@ import ru.cft.focusstart.observer.Observered;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CellModel implements Observered<CellChangeDto> {
+public class CellModel implements Observered {
 
     private final IObserverManager observerManager;
 

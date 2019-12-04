@@ -8,7 +8,6 @@ import ru.cft.focusstart.model.GameState.GameStateType;
 import ru.cft.focusstart.model.cell.CellModel;
 import ru.cft.focusstart.model.cell.CellType;
 import ru.cft.focusstart.observer.IObserverManager;
-import ru.cft.focusstart.timer.ITimer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +24,10 @@ public class ModelService implements IModelService {
 
     private Boolean bombGenerated;
 
-    public ModelService(IObserverManager observerManager, ITimer timer) {
+    public ModelService(IObserverManager observerManager) {
         this.observerManager = observerManager;
         bombCountModel = new BombCountModel(observerManager);
-        gameStateModel = new GameStateModel(observerManager, timer);
+        gameStateModel = new GameStateModel(observerManager);
     }
 
     @Override

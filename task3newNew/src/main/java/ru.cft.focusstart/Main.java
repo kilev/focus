@@ -22,10 +22,10 @@ public class Main {
     public static void main(String[] args) {
         IObserverManager observerManager = new ObserverManager();
         IDifficultyManager difficultyManager = new DifficultyManager();
-        ITimer timer = new SmartTimer(observerManager);
-        IModelService modelService = new ModelService(observerManager, timer);
+        IModelService modelService = new ModelService(observerManager);
         IRecordHandler recordHandler = new RecordFileHandler();
         IView view = new View(observerManager, new ModelController(modelService), new DifficultyController(difficultyManager), new RecordProvider(recordHandler));
-        RecordWriter recorder = new RecordWriter(observerManager, view, recordHandler);
+        ITimer timer = new SmartTimer(observerManager);
+        new RecordWriter(observerManager, view, timer, recordHandler);
     }
 }

@@ -8,7 +8,7 @@ import ru.cft.focusstart.observer.Observered;
 
 @Getter
 @RequiredArgsConstructor
-public class BombCountModel implements Observered<BombCountChangeDto> {
+public class BombCountModel implements Observered {
 
     private final IObserverManager observerManager;
 

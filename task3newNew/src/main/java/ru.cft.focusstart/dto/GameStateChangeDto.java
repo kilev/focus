@@ -11,5 +11,4 @@ public class GameStateChangeDto extends EventDto {
 
     private final GameStateType gameState;
     private final Difficulty difficulty;
-    private final Integer time;
 }

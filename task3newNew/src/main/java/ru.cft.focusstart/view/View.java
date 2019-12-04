@@ -14,7 +14,7 @@ public class View implements IView {
     public View(IObserverManager observerManager, ModelController modelController, DifficultyController difficultyController, IRecordProvider recordProvider) {
         MainWindow mainWindow = new MainWindow();
         ContentManager contentManager = new ContentManager(observerManager, modelController, difficultyController, mainWindow);
-        MenuManager menuManager = new MenuManager(modelController, difficultyController, recordProvider, mainWindow, contentManager);
+        new MenuManager(modelController, difficultyController, recordProvider, mainWindow, contentManager);
 
         modelController.newGame(difficultyController.getCurrentDifficulty());
     }

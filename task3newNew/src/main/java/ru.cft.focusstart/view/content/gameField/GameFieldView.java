@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class GameFieldView extends JPanel implements Observer<GameStateChangeDto> {
 
-    private static final Integer CELL_PREF_SIZE = 30;
+    private static final int CELL_PREF_SIZE = 30;
 
     private final IObserverManager observerManager;
     private final DifficultyController difficultyController;
