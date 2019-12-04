@@ -1,11 +1,12 @@
 package ru.cft.focusstart.view.utils;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
 
-@NoArgsConstructor
-public class ConstraintsUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ConstraintsUtils {
 
     private final static Insets DEFAULT_INSETS = new Insets(2, 2, 2, 2);
     private final static Integer DEFAULT_WEIGHT = 1;

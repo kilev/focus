@@ -107,7 +107,7 @@ public class ModelService implements IModelService {
             gameStateModel.setGameState(GameStateType.RUN);
         }
         cell.open();
-        if (cell.getCellType() == CellType.BOOMED) {
+        if (cell.getCellType() == CellType.EXPLODED) {
             gameStateModel.setGameState(GameStateType.LOSE);
             openLostBombs();
             return;
@@ -140,9 +140,9 @@ public class ModelService implements IModelService {
     }
 
     private void flagCell(CellModel cell) {
-        if (cell.getCellType() == CellType.CLOSED || cell.getCellType() == CellType.FLAGED) {
+        if (cell.getCellType() == CellType.CLOSED || cell.getCellType() == CellType.FLAGGED) {
             cell.flag();
-            if (cell.getCellType() == CellType.FLAGED) {
+            if (cell.getCellType() == CellType.FLAGGED) {
                 bombCountModel.bombFlaged();
             } else if (cell.getCellType() == CellType.CLOSED) {
                 bombCountModel.bombUnflaged();
@@ -158,7 +158,7 @@ public class ModelService implements IModelService {
     private void openCellNeighbors(CellModel cell) {
         if (cell.getCellType() == CellType.OPENED) {
             List<CellModel> neighbors = getCellNeighbors(cell);
-            if (neighbors.stream().filter(neighbor -> neighbor.getCellType() == CellType.FLAGED).count() == cell.getBombAround()) {
+            if (neighbors.stream().filter(neighbor -> neighbor.getCellType() == CellType.FLAGGED).count() == cell.getBombAround()) {
                 neighbors.forEach(this::openCell);
             }
         }

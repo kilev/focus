@@ -87,10 +87,7 @@ public class DifficultyWindow extends JDialog {
         JButton saveButton = new JButton(SAVE_BUTTON_NAME);
         content.add(saveButton, getConstraints(0, 5, 1, 4, GridBagConstraints.CENTER));
 
-        saveButton.addActionListener(e -> {
-            difficultyController.setDifficulty(selectedDifficulty);
-
-        });
+        saveButton.addActionListener(e -> difficultyController.setDifficulty(selectedDifficulty));
         eazyButton.addActionListener(e -> selectedDifficulty = Difficulty.EAZY);
         mediumButton.addActionListener(e -> selectedDifficulty = Difficulty.MEDIUM);
         hardButton.addActionListener(e -> selectedDifficulty = Difficulty.HARD);

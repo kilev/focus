@@ -24,7 +24,7 @@ public class CellModel implements Observered<CellChangeDto> {
     public void open() {
         if (cellType == CellType.CLOSED) {
             if (bomb) {
-                cellType = CellType.BOOMED;
+                cellType = CellType.EXPLODED;
             } else {
                 cellType = CellType.OPENED;
             }
@@ -34,9 +34,9 @@ public class CellModel implements Observered<CellChangeDto> {
 
     public void flag() {
         if (cellType == CellType.CLOSED) {
-            cellType = CellType.FLAGED;
+            cellType = CellType.FLAGGED;
             sendDto();
-        } else if (cellType == CellType.FLAGED) {
+        } else if (cellType == CellType.FLAGGED) {
             cellType = CellType.CLOSED;
             sendDto();
         }

@@ -1,9 +1,10 @@
 package ru.cft.focusstart.view.content.menu;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-class MenuConstant {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+final class MenuConstant {
 
     private static final String NEW_LINE = System.lineSeparator();
 

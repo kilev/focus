@@ -6,8 +6,6 @@ public interface IDifficultyManager {
 
     void setCustomDifficultyConfig(DifficultyConfig difficultyConfig);
 
-//    DifficultyConfig getDifficulty(Difficulty defaultDifficulty);
-
     Difficulty getCurrentDifficulty();
 
 

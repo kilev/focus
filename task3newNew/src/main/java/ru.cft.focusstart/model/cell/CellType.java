@@ -1,5 +1,5 @@
 package ru.cft.focusstart.model.cell;
 
 public enum CellType {
-    CLOSED, FLAGED, OPENED, BOOMED
+    CLOSED, FLAGGED, OPENED, EXPLODED
 }

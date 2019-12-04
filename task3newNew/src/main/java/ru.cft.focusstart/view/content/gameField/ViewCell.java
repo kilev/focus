@@ -29,20 +29,21 @@ public class ViewCell extends JButton implements Observer<CellChangeDto>, Resiza
 
     @Override
     public void handleEvent(CellChangeDto cellChangeDTO) {
-        if (coordX == cellChangeDTO.getX() && coordY == cellChangeDTO.getY()) {
-            switch (cellChangeDTO.getCellType()) {
-                case CLOSED:
-                    setImageIconAndResize(IconStorage.CLOSED.getImageIcon());
-                    break;
-                case FLAGED:
-                    setImageIconAndResize(IconStorage.FLAGED.getImageIcon());
-                    break;
-                case OPENED:
-                    setImageIconAndResize(IconStorage.valueOf(IconStorage.OPENED_NUMBER_PREFIX + cellChangeDTO.getBombsAround().toString()).getImageIcon());
-                    break;
-                case BOOMED:
-                    setImageIconAndResize(IconStorage.BOMB.getImageIcon());
-            }
+        if (!coordX.equals(cellChangeDTO.getX()) || !coordY.equals(cellChangeDTO.getY())) {
+            return;
+        }
+        switch (cellChangeDTO.getCellType()) {
+            case CLOSED:
+                setImageIconAndResize(IconStorage.CLOSED.getImageIcon());
+                break;
+            case FLAGGED:
+                setImageIconAndResize(IconStorage.FLAGED.getImageIcon());
+                break;
+            case OPENED:
+                setImageIconAndResize(IconStorage.valueOf(IconStorage.OPENED_NUMBER_PREFIX + cellChangeDTO.getBombsAround().toString()).getImageIcon());
+                break;
+            case EXPLODED:
+                setImageIconAndResize(IconStorage.BOMB.getImageIcon());
         }
     }
 }

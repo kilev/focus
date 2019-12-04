@@ -3,19 +3,19 @@ package ru.cft.focusstart.difficulty;
 import lombok.Getter;
 
 public enum Difficulty {
-    EAZY(10, 10, 9),
+    EAZY(9, 9, 10),
     MEDIUM(16, 16, 40),
     HARD(16, 30, 99),
     CUSTOM(40, 40, 99),
     ;
 
-    private final static Integer MIN_X_SIZE = 4;
-    private final static Integer MIN_Y_SIZE = 8;
-    private final static Integer MIN_BOMB_COUNT = 4;
+    private final static int MIN_X_SIZE = 4;
+    private final static int MIN_Y_SIZE = 8;
+    private final static int MIN_BOMB_COUNT = 4;
 
-    private final static Integer MAX_X_SIZE = 40;
-    private final static Integer MAX_Y_SIZE = 40;
-    private final static Integer MAX_BOMB_COUNT = 1000;
+    private final static int MAX_X_SIZE = 40;
+    private final static int MAX_Y_SIZE = 40;
+    private final static int MAX_BOMB_COUNT = 1000;
 
     @Getter
     private DifficultyConfig difficultyConfig;
