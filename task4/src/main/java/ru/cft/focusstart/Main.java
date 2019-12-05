@@ -5,11 +5,12 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Integer valueCount = UserQuestioner.askUserForValueCount();
-        Integer threadCount = UserQuestioner.askUserForThreadCount();
+        Integer valueCount = 1000000; //UserQuestioner.askUserForValueCount();
+        Integer threadCount = 1; //UserQuestioner.askUserForThreadCount();
 
         List<Integer> data = DataGenerator.generateData(valueCount);
         List<Task> tasks = new ArrayList<>();
+        List<Thread> computingThreads = new ArrayList<>();
 
         for (int i = 0; i < threadCount; i++) {
             tasks.add(new Task());
@@ -22,8 +23,20 @@ public class Main {
                 }
             }
         }
+
+        long startTime = System.currentTimeMillis();
         for (Task task : tasks) {
-            new Thread(new Computer(task)).start();
+            Thread computingThread = new Thread(new Computer(task));
+            computingThreads.add(computingThread);
+            computingThread.start();
         }
+        for (Thread computingThread : computingThreads) {
+            try {
+                computingThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("значения были посчитаны за: " + (System.currentTimeMillis() - startTime) + " миллисекунд");
     }
 }

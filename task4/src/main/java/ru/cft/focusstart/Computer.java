@@ -18,12 +18,11 @@ public class Computer implements Runnable {
         }
     }
 
-    private Integer computeValue(Integer value) {
+    private Double computeValue(Integer value) {
         return someHardFunction(value);
     }
 
-    private Integer someHardFunction(Integer value) {
-        return (int) (Math.atan(value) * 100000);
-
+    private double someHardFunction(Integer value) {
+        return Math.log(Math.cos(Math.sin(Math.sqrt(Math.atan(value) * 100000))));
     }
 }
