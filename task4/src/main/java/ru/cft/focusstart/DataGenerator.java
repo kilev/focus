@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.NONE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class DataGenerator {
 
     private final static Integer VALUE_COUNT = 100000; //UserQuestioner.askUserForValueCount();
