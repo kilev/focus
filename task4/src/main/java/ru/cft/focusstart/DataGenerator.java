@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class DataGenerator {
 
-    private final static Integer VALUE_COUNT = 100000; //UserQuestioner.askUserForValueCount();
+    private final static Integer VALUE_COUNT = 100000;
 
     static List<Integer> generateData() {
         List<Integer> generatedData = new ArrayList<>();
