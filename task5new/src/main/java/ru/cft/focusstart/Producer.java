@@ -15,11 +15,9 @@ class Producer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            logger.info("Producer: " + Thread.currentThread().getName() + " проснулся.");
             Resource resource = new Resource();
-            if (storage.add(resource)) {
-                logger.info("Producer: " + Thread.currentThread().getName() + " создал ресурс: " + resource.getId() + ".");
-            }
+            logger.info("Producer: " + Thread.currentThread().getName() + " создал ресурс: " + resource.getId() + ".");
+            storage.add(resource);
             try {
                 Thread.sleep(produceTime);
             } catch (InterruptedException e) {

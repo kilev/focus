@@ -19,22 +19,21 @@ class Storage {
 
     private int resourceCount = 0;
 
-    synchronized boolean add(Resource resource) {
+    synchronized void add(Resource resource) {
         try {
             if (resourceCount < MAX_RESOURCE_COUNT) {
                 notifyAll();
                 resources.add(resource);
                 resourceCount++;
                 logger.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
-                return true;
             } else {
-                wait();
                 logger.info("Склад переполнен, producer " + Thread.currentThread().getName() + " не смог поместить ресурс (уснул).");
+                wait();
+                logger.info("Producer: " + Thread.currentThread().getName() + " проснулся.");
             }
         } catch (InterruptedException e) {
-            logger.error("ошибка", e);
+            logger.error("Остановка потока.", e);
         }
-        return false;
     }
 
     synchronized Resource get() {
@@ -49,8 +48,9 @@ class Storage {
             }
             logger.info("Склад пуст, consumer " + Thread.currentThread().getName() + " не смог взять ресурс (уснул).");
             wait();
+            logger.info("Consumer: " + Thread.currentThread().getName() + " проснулся.");
         } catch (InterruptedException e) {
-            logger.error("Ошибка.", e);
+            logger.error("Остановка потока.", e);
         }
         return null;
     }

@@ -15,7 +15,6 @@ class Consumer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            logger.info("Consumer: " + Thread.currentThread().getName() + " проснулся.");
             Resource resource = storage.get();
             if (resource != null) {
                 try {
