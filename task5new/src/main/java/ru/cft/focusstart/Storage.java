@@ -15,14 +15,11 @@ class Storage {
 
     private final List<Resource> resources = new ArrayList<>();
 
-    private int resourceCount = 0;
-
     synchronized void add(Resource resource) {
         try {
-            if (resourceCount < MAX_RESOURCE_COUNT) {
+            if (resources.size() < MAX_RESOURCE_COUNT) {
                 notifyAll();
                 resources.add(resource);
-                resourceCount++;
                 log.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
             } else {
                 log.info("Склад переполнен, producer " + Thread.currentThread().getName() + " не смог поместить ресурс (уснул).");
@@ -36,11 +33,10 @@ class Storage {
 
     synchronized Resource get() {
         try {
-            if (resourceCount > MIN_RESOURCE_COUNT) {
+            if (resources.size() > MIN_RESOURCE_COUNT) {
                 notifyAll();
                 Resource resource = resources.get(0);
                 resources.remove(0);
-                resourceCount--;
                 log.info("Ресурс с id: " + resource.getId() + " забрал consumer: " + Thread.currentThread().getName());
                 return resource;
             }
