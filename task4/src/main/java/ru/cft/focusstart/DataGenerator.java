@@ -3,19 +3,15 @@ package ru.cft.focusstart;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class DataGenerator {
 
-    private final static Integer VALUE_COUNT = 100000;
+    private final static Integer VALUE_COUNT = 100_000;
+    private final static Integer SEED_VALUE = 1;
 
-    static List<Integer> generateData() {
-        List<Integer> generatedData = new ArrayList<>();
-        for (int i = 1; i < VALUE_COUNT; i++) {
-            generatedData.add(i);
-        }
-        return generatedData;
+    static Stream<Integer> getDataStream() {
+        return Stream.iterate(SEED_VALUE, (Integer i) -> ++i).limit(VALUE_COUNT);
     }
 }

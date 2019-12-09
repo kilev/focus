@@ -1,9 +1,10 @@
 package ru.cft.focusstart;
 
-public class Main {
+import java.util.stream.Collectors;
 
+public class Main {
     public static void main(String[] args) {
-        Task task = new Task(DataGenerator.generateData());
+        Task<FunctionCalculator> task = new Task<>(DataGenerator.getDataStream().collect(Collectors.toList()), new SomeHardFunctionCalculator());
         TaskExecutor.execute(task);
         TaskResultValidator.validate(task);
     }

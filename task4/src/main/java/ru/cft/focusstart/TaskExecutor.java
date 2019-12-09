@@ -1,20 +1,20 @@
 package ru.cft.focusstart;
 
+import com.google.common.base.Stopwatch;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class TaskExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
-
-    static void execute(Task task) {
-        long startTime = System.currentTimeMillis();
+    static void execute(Task<FunctionCalculator> task) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         ForkJoinPool.commonPool().invoke(new ForkJoinTask(task));
-        logger.info("значения были посчитаны за: " + (System.currentTimeMillis() - startTime));
+        log.info("значения были посчитаны за: " + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + " миллисекунд.");
     }
 }

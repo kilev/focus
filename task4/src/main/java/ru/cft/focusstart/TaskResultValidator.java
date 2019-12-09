@@ -1,25 +1,29 @@
 package ru.cft.focusstart;
 
+import com.google.common.base.Stopwatch;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class TaskResultValidator {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskResultValidator.class);
-
-    static void validate(Task task) {
+    static void validate(Task<FunctionCalculator> task) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         for (int i = 0; i < task.getRawData().size(); i++) {
             Double resultValue = task.getResultData().get(i);
-            Double theoreticalValue = Math.cos(task.getRawData().get(i));
+            Double theoreticalValue = task.getFunctionCalculator().calculateFunction(task.getRawData().get(i));
+
             if (!resultValue.equals(theoreticalValue)) {
-                logger.info("Wrong result: required value" + theoreticalValue + " ,founded: " + resultValue);
+                log.info("Неправильное значение, ожидалось:" + theoreticalValue + " ,найдено: " + resultValue);
                 return;
             }
+            log.info("Проверен результат для значения: " + i);
         }
-        logger.info("results successful validated.");
+        log.info("результаты успешно проверены. Проверка заняла: " + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + " миллисекунд. в однопоточном режиме.");
     }
 
 }

@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-class Task {
+class Task<T extends FunctionCalculator> {
     private final List<Integer> rawData;
-    private List<Double> resultData = new ArrayList<>();
+    private final T functionCalculator;
+    private final List<Double> resultData = new ArrayList<>();
     private Double sum = 0.0;
 }
+

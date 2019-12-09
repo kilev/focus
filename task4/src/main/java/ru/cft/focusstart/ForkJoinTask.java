@@ -1,26 +1,26 @@
 package ru.cft.focusstart;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.RecursiveTask;
 
+@Slf4j
 @RequiredArgsConstructor
-public class ForkJoinTask extends RecursiveTask<Task> {
+public class ForkJoinTask extends RecursiveTask<Task<FunctionCalculator>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ForkJoinTask.class);
-    private static final int SIZE_TO_SPLIT = 100;
+    private static final int SIZE_TO_SPLIT = 100;//метод тыка, нужно смотреть относительно сложности задачи
 
-    private final Task task;
+    private final Task<FunctionCalculator> task;
 
     @Override
-    protected Task compute() {
+    protected Task<FunctionCalculator> compute() {
         if (task.getRawData().size() > SIZE_TO_SPLIT) {
-            splitValues();
+            splitTask();
         } else {
             task.getRawData().forEach(value -> {
-                Double result = someHardFunction(value);
+                Double result = task.getFunctionCalculator().calculateFunction(value);
+                log.info("Просчитано значение: " + value + " в потоке: " + Thread.currentThread().getName());
                 task.getResultData().add(result);
                 task.setSum(task.getSum() + result);
             });
@@ -28,22 +28,13 @@ public class ForkJoinTask extends RecursiveTask<Task> {
         return task;
     }
 
-    private void splitValues() {
+    private void splitTask() {
         int middleOfList = task.getRawData().size() / 2;
-        ForkJoinTask leftTask = new ForkJoinTask(new Task(task.getRawData().subList(0, middleOfList)));
-        ForkJoinTask rightTask = new ForkJoinTask(new Task(task.getRawData().subList(middleOfList, task.getRawData().size())));
+        ForkJoinTask leftTask = new ForkJoinTask(new Task<>(task.getRawData().subList(0, middleOfList), task.getFunctionCalculator()));
+        ForkJoinTask rightTask = new ForkJoinTask(new Task<>(task.getRawData().subList(middleOfList, task.getRawData().size()), task.getFunctionCalculator()));
         leftTask.fork();
         rightTask.fork();
         task.getResultData().addAll(leftTask.join().getResultData());
         task.getResultData().addAll(rightTask.join().getResultData());
-    }
-
-    private Double someHardFunction(Integer value) {
-        Double resultValue = null;
-        for (int i = 0; i < 10000; i++) {
-            resultValue = Math.cos(value);
-        }
-        logger.info("Computed value: " + value + " in " + Thread.currentThread().getName());
-        return resultValue;
     }
 }
