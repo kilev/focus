@@ -1,13 +1,11 @@
 package ru.cft.focusstart;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 class Producer implements Runnable {
-
-    private static final Logger logger = LoggerFactory.getLogger(Producer.class);
 
     private final Storage storage;
     private final Integer produceTime;
@@ -16,7 +14,7 @@ class Producer implements Runnable {
     public void run() {
         while (true) {
             Resource resource = new Resource();
-            logger.info("Producer: " + Thread.currentThread().getName() + " создал ресурс: " + resource.getId() + ".");
+            log.info("Producer: " + Thread.currentThread().getName() + " создал ресурс: " + resource.getId() + ".");
             storage.add(resource);
             try {
                 Thread.sleep(produceTime);

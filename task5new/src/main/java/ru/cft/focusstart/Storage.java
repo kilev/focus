@@ -1,16 +1,14 @@
 package ru.cft.focusstart;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 class Storage {
-
-    private static final Logger logger = LoggerFactory.getLogger(Storage.class);
 
     private static final int MIN_RESOURCE_COUNT = 0;
     private final int MAX_RESOURCE_COUNT;
@@ -25,14 +23,14 @@ class Storage {
                 notifyAll();
                 resources.add(resource);
                 resourceCount++;
-                logger.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
+                log.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
             } else {
-                logger.info("Склад переполнен, producer " + Thread.currentThread().getName() + " не смог поместить ресурс (уснул).");
+                log.info("Склад переполнен, producer " + Thread.currentThread().getName() + " не смог поместить ресурс (уснул).");
                 wait();
-                logger.info("Producer: " + Thread.currentThread().getName() + " проснулся.");
+                log.info("Producer: " + Thread.currentThread().getName() + " проснулся.");
             }
         } catch (InterruptedException e) {
-            logger.error("Остановка потока.", e);
+            log.error("Остановка потока.", e);
         }
     }
 
@@ -43,14 +41,14 @@ class Storage {
                 Resource resource = resources.get(0);
                 resources.remove(0);
                 resourceCount--;
-                logger.info("Ресурс с id: " + resource.getId() + " забрал consumer: " + Thread.currentThread().getName());
+                log.info("Ресурс с id: " + resource.getId() + " забрал consumer: " + Thread.currentThread().getName());
                 return resource;
             }
-            logger.info("Склад пуст, consumer " + Thread.currentThread().getName() + " не смог взять ресурс (уснул).");
+            log.info("Склад пуст, consumer " + Thread.currentThread().getName() + " не смог взять ресурс (уснул).");
             wait();
-            logger.info("Consumer: " + Thread.currentThread().getName() + " проснулся.");
+            log.info("Consumer: " + Thread.currentThread().getName() + " проснулся.");
         } catch (InterruptedException e) {
-            logger.error("Остановка потока.", e);
+            log.error("Остановка потока.", e);
         }
         return null;
     }

@@ -1,13 +1,11 @@
 package ru.cft.focusstart;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 class Consumer implements Runnable {
-
-    private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
 
     private final Storage storage;
     private final Integer consumeTime;
@@ -19,7 +17,7 @@ class Consumer implements Runnable {
             if (resource != null) {
                 try {
                     Thread.sleep(consumeTime);
-                    logger.info("Consumer:" + Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
+                    log.info("Consumer:" + Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
