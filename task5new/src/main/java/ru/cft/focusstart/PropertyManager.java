@@ -1,6 +1,5 @@
 package ru.cft.focusstart;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ class PropertyManager {
 
     private static final String PROPERTIES_FILE_NAME = "config.properties";
 
-    @Getter
     private final Properties properties = new Properties();
 
     PropertyManager() {

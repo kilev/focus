@@ -11,13 +11,13 @@ import java.util.List;
 class Storage {
 
     private static final int MIN_RESOURCE_COUNT = 0;
-    private final int MAX_RESOURCE_COUNT;
+    private final Integer maxResourceCount;
 
     private final List<Resource> resources = new ArrayList<>();
 
     synchronized void add(Resource resource) {
         try {
-            if (resources.size() < MAX_RESOURCE_COUNT) {
+            if (resources.size() < maxResourceCount) {
                 notifyAll();
                 resources.add(resource);
                 log.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
