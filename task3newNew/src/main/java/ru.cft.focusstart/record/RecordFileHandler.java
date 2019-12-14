@@ -3,6 +3,7 @@ package ru.cft.focusstart.record;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.cft.focusstart.difficulty.Difficulty;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Singleton
 public class RecordFileHandler implements IRecordHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(IconStorage.class);

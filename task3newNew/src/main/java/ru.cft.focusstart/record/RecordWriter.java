@@ -1,5 +1,7 @@
 package ru.cft.focusstart.record;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import ru.cft.focusstart.difficulty.Difficulty;
 import ru.cft.focusstart.dto.GameStateChangeDto;
 import ru.cft.focusstart.model.GameState.GameStateType;
@@ -10,12 +12,14 @@ import ru.cft.focusstart.view.IView;
 
 import java.util.List;
 
+@Singleton
 public class RecordWriter implements Observer<GameStateChangeDto> {
 
     private final IView view;
     private final ITimer timer;
     private final IRecordHandler recordHandler;
 
+    @Inject
     public RecordWriter(IObserverManager observerManager, IView view, ITimer timer, IRecordHandler recordHandler) {
         observerManager.addObserver(GameStateChangeDto.class, this);
         this.view = view;

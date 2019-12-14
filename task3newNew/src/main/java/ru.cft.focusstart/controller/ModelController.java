@@ -1,13 +1,17 @@
 package ru.cft.focusstart.controller;
 
-import lombok.RequiredArgsConstructor;
+import com.google.inject.Inject;
 import ru.cft.focusstart.difficulty.Difficulty;
 import ru.cft.focusstart.model.service.IModelService;
 
-@RequiredArgsConstructor
 public class ModelController {
 
     private final IModelService modelService;
+
+    @Inject
+    public ModelController(IModelService modelService) {
+        this.modelService = modelService;
+    }
 
     public void openCell(Integer x, Integer y) {
         modelService.openCell(x, y);

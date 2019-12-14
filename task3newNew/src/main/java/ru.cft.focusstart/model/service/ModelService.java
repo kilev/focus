@@ -1,5 +1,7 @@
 package ru.cft.focusstart.model.service;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import ru.cft.focusstart.difficulty.Difficulty;
 import ru.cft.focusstart.difficulty.DifficultyConfig;
 import ru.cft.focusstart.model.BombCountModel;
@@ -14,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Singleton
 public class ModelService implements IModelService {
 
     private final IObserverManager observerManager;
@@ -24,6 +27,7 @@ public class ModelService implements IModelService {
 
     private Boolean bombGenerated;
 
+    @Inject
     public ModelService(IObserverManager observerManager) {
         this.observerManager = observerManager;
         bombCountModel = new BombCountModel(observerManager);

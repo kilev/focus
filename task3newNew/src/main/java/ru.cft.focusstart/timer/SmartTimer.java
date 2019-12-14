@@ -1,5 +1,7 @@
 package ru.cft.focusstart.timer;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import ru.cft.focusstart.dto.GameStateChangeDto;
 import ru.cft.focusstart.dto.TimeChangeDto;
 import ru.cft.focusstart.observer.IObserverManager;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Singleton
 public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
 
     private final IObserverManager observerManager;
@@ -19,6 +22,7 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeDto> {
     private AtomicInteger time = new AtomicInteger(0);
     private AtomicBoolean firstTick = new AtomicBoolean(true);
 
+    @Inject
     public SmartTimer(IObserverManager observerManager) {
         this.observerManager = observerManager;
         observerManager.addObserver(GameStateChangeDto.class, this);
