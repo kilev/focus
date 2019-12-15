@@ -11,6 +11,8 @@
     <modules>
         <module>task1</module>
         <module>task2</module>
+        <module>task6</module>
+        <module>task6client</module>
     </modules>
 
     <build>
