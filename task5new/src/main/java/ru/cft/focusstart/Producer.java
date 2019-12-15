@@ -7,17 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 class Producer implements Runnable {
 
-    private final Storage storage;
-    private final Integer produceTime;
+    private static final Integer PRODUCE_TIME = PropertyManager.PRODUCE_TIME.getValue();
+    private final Storage<Task> storage;
 
     @Override
     public void run() {
         while (true) {
-            Resource resource = new Resource();
-            log.info("Producer: " + Thread.currentThread().getName() + " создал ресурс: " + resource.getId() + ".");
+            Task resource = new Task();
+            log.info("Producer: " + Thread.currentThread().getName() + " произвел ресурс: " + resource.getId() + ".");
             storage.add(resource);
+            log.info("Producer: " + Thread.currentThread().getName() + " поместил: " + resource.getId() + ".");
             try {
-                Thread.sleep(produceTime);
+                Thread.sleep(PRODUCE_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

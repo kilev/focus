@@ -1,5 +1,6 @@
 package ru.cft.focusstart;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -7,21 +8,29 @@ import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
-class PropertyManager {
+enum PropertyManager {
+    PRODUCERS_COUNT("producer.count"),
+    PRODUCE_TIME("producer.produceTime"),
+    CONSUMER_COUNT("consumer.count"),
+    CONSUME_TIME("consumer.consumeTime"),
+    STORAGE_SIZE("storage.size");
 
     private static final String PROPERTIES_FILE_NAME = "config.properties";
+    @Getter
+    private final Integer value;
 
-    private final Properties properties = new Properties();
+    PropertyManager(String propertyName) {
+        value = getPropertyValue(propertyName);
+    }
 
-    PropertyManager() {
+    private Integer getPropertyValue(String propertyName) {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
+            Properties properties = new Properties();
             properties.load(inputStream);
+            return Integer.valueOf(properties.getProperty(propertyName));
         } catch (IOException e) {
             log.error("Не удалось найти файл конфигураций: " + PROPERTIES_FILE_NAME, e);
         }
-    }
-
-    Integer getProperty(String key) {
-        return Integer.valueOf(properties.getProperty(key));
+        return null;
     }
 }

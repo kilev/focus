@@ -7,21 +7,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 class Consumer implements Runnable {
 
-    private final Storage storage;
-    private final Integer consumeTime;
+    private static final Integer CONSUME_TIME = PropertyManager.CONSUME_TIME.getValue();
+    private final Storage<Task> storage;
 
     @Override
     public void run() {
         while (true) {
-            Resource resource = storage.get();
-            if (resource != null) {
-                try {
-                    Thread.sleep(consumeTime);
-                    log.info("Consumer:" + Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            Task resource = storage.get();
+            log.info("Consumer: " + Thread.currentThread().getName() + " забрал ресурс " + resource.getId() + ".");
+            try {
+                Thread.sleep(CONSUME_TIME);
+                log.info("Consumer: " + Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
         }
     }
 

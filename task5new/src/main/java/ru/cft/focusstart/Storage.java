@@ -1,51 +1,38 @@
 package ru.cft.focusstart;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 @Slf4j
-@RequiredArgsConstructor
-class Storage {
+class Storage<T> {
 
-    private static final int MIN_RESOURCE_COUNT = 0;
-    private final Integer maxResourceCount;
+    private final BlockingQueue<T> resources = new ArrayBlockingQueue<>(PropertyManager.STORAGE_SIZE.getValue());
 
-    private final List<Resource> resources = new ArrayList<>();
-
-    synchronized void add(Resource resource) {
-        try {
-            if (resources.size() < maxResourceCount) {
-                notifyAll();
-                resources.add(resource);
-                log.info("Ресурс с id: " + resource.getId() + " добавлен на склад producer'ом: " + Thread.currentThread().getName());
-            } else {
-                log.info("Склад переполнен, producer " + Thread.currentThread().getName() + " не смог поместить ресурс (уснул).");
-                wait();
-                log.info("Producer: " + Thread.currentThread().getName() + " проснулся.");
+    void add(T resource) {
+        if (!resources.offer(resource)) {
+            log.info("Producer: " + Thread.currentThread().getName() + " склад полон, поток переходит в режим ожидания.");
+            try {
+                resources.put(resource);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            log.error("Остановка потока.", e);
+            log.info("Producer: " + Thread.currentThread().getName() + " вышел из режима ожидания.");
         }
     }
 
-    synchronized Resource get() {
-        try {
-            if (resources.size() > MIN_RESOURCE_COUNT) {
-                notifyAll();
-                Resource resource = resources.get(0);
-                resources.remove(0);
-                log.info("Ресурс с id: " + resource.getId() + " забрал consumer: " + Thread.currentThread().getName());
-                return resource;
+    T get() {
+        T resource = resources.poll();
+        if (resource == null) {
+            log.info("Consumer:" + Thread.currentThread().getName() + " склад пуст, поток переходит в режим ожидания.");
+            try {
+                resource = resources.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            log.info("Склад пуст, consumer " + Thread.currentThread().getName() + " не смог взять ресурс (уснул).");
-            wait();
-            log.info("Consumer: " + Thread.currentThread().getName() + " проснулся.");
-        } catch (InterruptedException e) {
-            log.error("Остановка потока.", e);
+            log.info("Consumer: " + Thread.currentThread().getName() + " вышел из режима ожидания.");
         }
-        return null;
+        return resource;
     }
 }
