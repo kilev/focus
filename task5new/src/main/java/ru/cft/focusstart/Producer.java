@@ -19,7 +19,7 @@ class Producer implements Runnable {
         while (true) {
             try {
                 Resource resource = new Resource();
-                log.info(Thread.currentThread().getName() + " произвел ресурс: " + resource.getId() + ".");
+                log.info(Thread.currentThread().getName() + ": произвел ресурс: " + resource.getId() + ".");
                 storage.add(resource);
                 Thread.sleep(PRODUCE_TIME);
             } catch (InterruptedException e) {

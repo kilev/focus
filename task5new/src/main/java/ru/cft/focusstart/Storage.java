@@ -19,12 +19,12 @@ class Storage {
         lock.lock();
         try {
             while (!resources.offer(resource)) {
-                log.info(Thread.currentThread().getName() + " склад полон, поток переходит в режим ожидания.");
+                log.info(Thread.currentThread().getName() + ": склад полон, поток переходит в режим ожидания.");
                 nonFull.await();
-                log.info(Thread.currentThread().getName() + " вышел из режима ожидания.");
+                log.info(Thread.currentThread().getName() + ": вышел из режима ожидания.");
             }
-            log.info(Thread.currentThread().getName() + " поместил: " + resource.getId() + ".");
-            nonEmpty.signalAll();
+            log.info(Thread.currentThread().getName() + ": поместил: " + resource.getId() + ".");
+            nonEmpty.signal();
         } catch (InterruptedException e) {
             log.error("Поток остановлен", e);
         } finally {
@@ -37,13 +37,13 @@ class Storage {
         try {
             Resource resource = resources.poll();
             while (resource == null) {
-                log.info(Thread.currentThread().getName() + " склад пуст, поток переходит в режим ожидания.");
+                log.info(Thread.currentThread().getName() + ": склад пуст, поток переходит в режим ожидания.");
                 nonEmpty.await();
-                log.info(Thread.currentThread().getName() + " вышел из режима ожидания.");
+                log.info(Thread.currentThread().getName() + ": вышел из режима ожидания.");
                 resource = resources.poll();
             }
-            log.info(Thread.currentThread().getName() + " забрал ресурс " + resource.getId() + ".");
-            nonFull.signalAll();
+            log.info(Thread.currentThread().getName() + ": забрал ресурс " + resource.getId() + ".");
+            nonFull.signal();
             return resource;
         } catch (InterruptedException e) {
             log.error("Поток остановлен", e);
