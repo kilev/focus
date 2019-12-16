@@ -1,5 +1,6 @@
 package ru.cft.focusstart;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -7,21 +8,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 class Consumer implements Runnable {
 
+    @Getter
+    private static final String NAME = "Consumer";
     private static final Integer CONSUME_TIME = PropertyManager.CONSUME_TIME.getValue();
-    private final Storage<Task> storage;
+
+    private final Storage storage;
 
     @Override
     public void run() {
         while (true) {
-            Task resource = storage.get();
-            log.info("Consumer: " + Thread.currentThread().getName() + " забрал ресурс " + resource.getId() + ".");
             try {
+                Resource resource = storage.get();
                 Thread.sleep(CONSUME_TIME);
-                log.info("Consumer: " + Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
+                log.info(Thread.currentThread().getName() + " потребил ресурс: " + resource.getId() + ".");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

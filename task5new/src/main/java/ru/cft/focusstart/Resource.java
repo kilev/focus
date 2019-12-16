@@ -4,13 +4,13 @@ import lombok.Getter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Task {
+class Resource {
 
     private static final AtomicInteger count = new AtomicInteger(0);
     @Getter
     private final long id;
 
-    Task() {
+    Resource() {
         id = count.getAndIncrement();
     }
 }
