@@ -19,14 +19,14 @@ class Storage {
         lock.lock();
         try {
             while (!resources.offer(resource)) {
-                log.info(Thread.currentThread().getName() + ": склад полон, поток переходит в режим ожидания.");
+                log.info("{}: склад полон, поток переходит в режим ожидания.", Thread.currentThread().getName());
                 nonFull.await();
-                log.info(Thread.currentThread().getName() + ": вышел из режима ожидания.");
+                log.info("{}: вышел из режима ожидания.", Thread.currentThread().getName());
             }
-            log.info(Thread.currentThread().getName() + ": поместил: " + resource.getId() + ".");
+            log.info("{}: поместил: {}.", Thread.currentThread().getName(), resource.getId());
             nonEmpty.signal();
         } catch (InterruptedException e) {
-            log.error("Поток остановлен", e);
+            log.error("Поток остановлен.", e);
         } finally {
             lock.unlock();
         }
@@ -37,16 +37,16 @@ class Storage {
         try {
             Resource resource = resources.poll();
             while (resource == null) {
-                log.info(Thread.currentThread().getName() + ": склад пуст, поток переходит в режим ожидания.");
+                log.info("{}: склад пуст, поток переходит в режим ожидания.", Thread.currentThread().getName());
                 nonEmpty.await();
-                log.info(Thread.currentThread().getName() + ": вышел из режима ожидания.");
+                log.info("{}: вышел из режима ожидания.", Thread.currentThread().getName());
                 resource = resources.poll();
             }
-            log.info(Thread.currentThread().getName() + ": забрал ресурс " + resource.getId() + ".");
+            log.info("{}: забрал ресурс {}.", Thread.currentThread().getName(), resource.getId());
             nonFull.signal();
             return resource;
         } catch (InterruptedException e) {
-            log.error("Поток остановлен", e);
+            log.error("Поток остановлен.", e);
         } finally {
             lock.unlock();
         }

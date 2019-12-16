@@ -20,7 +20,7 @@ class Consumer implements Runnable {
             try {
                 Resource resource = storage.get();
                 Thread.sleep(CONSUME_TIME);
-                log.info(Thread.currentThread().getName() + ": потребил ресурс: " + resource.getId() + ".");
+                log.info("{}: потребил ресурс: {}.", Thread.currentThread().getName(), resource.getId());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
