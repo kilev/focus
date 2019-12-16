@@ -15,6 +15,6 @@ final class TaskExecutor {
     static void execute(Task<FunctionCalculator> task) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         ForkJoinPool.commonPool().invoke(new ForkJoinTask(task));
-        log.info("значения были посчитаны за: " + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + " миллисекунд.");
+        log.info("значения были посчитаны за: {} миллисекунд.", stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
     }
 }

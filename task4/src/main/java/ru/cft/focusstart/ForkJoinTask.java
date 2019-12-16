@@ -20,7 +20,7 @@ public class ForkJoinTask extends RecursiveTask<Task<FunctionCalculator>> {
         } else {
             task.getRawData().forEach(value -> {
                 Double result = task.getFunctionCalculator().calculateFunction(value);
-                log.info("Просчитано значение: " + value + " в потоке: " + Thread.currentThread().getName());
+                log.info("Просчитано значение: {}, в потоке: {}", value, Thread.currentThread().getName());
                 task.getResultData().add(result);
                 task.setSum(task.getSum() + result);
             });

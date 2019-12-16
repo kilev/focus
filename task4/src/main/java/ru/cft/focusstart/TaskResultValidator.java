@@ -18,12 +18,12 @@ final class TaskResultValidator {
             Double theoreticalValue = task.getFunctionCalculator().calculateFunction(task.getRawData().get(i));
 
             if (!resultValue.equals(theoreticalValue)) {
-                log.info("Неправильное значение, ожидалось:" + theoreticalValue + " ,найдено: " + resultValue);
+                log.info("Неправильное значение, ожидалось: {}, найдено: {}.", theoreticalValue, resultValue);
                 return;
             }
-            log.info("Проверен результат для значения: " + i);
+            log.info("Проверен результат для значения: {}", i);
         }
-        log.info("результаты успешно проверены. Проверка заняла: " + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + " миллисекунд. в однопоточном режиме.");
+        log.info("результаты успешно проверены. Проверка заняла: {} миллисекунд. в однопоточном режиме.", stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
     }
 
 }
