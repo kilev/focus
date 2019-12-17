@@ -36,13 +36,29 @@ public class RecordWriter implements Observer<GameStateChangeEvent> {
 
     private void checkToNewRecord(Integer score, Difficulty difficulty) {
         List<Record> records = recordHandler.getRecords();
-        for (Record record : records) {
-            if (record.getDifficulty() == difficulty && (record.getScore() == null || record.getScore() > score)) {
-                records.set(records.indexOf(record), new Record(view.askUserForName(), difficulty, score));
-                recordHandler.saveRecords(records);
-                return;
+
+        Integer subRecordsStartIndex = null;
+        int subRecordsCount = 0;
+
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getDifficulty() == difficulty) {
+                if (subRecordsStartIndex == null) {
+                    subRecordsStartIndex = i;
+                }
+                subRecordsCount++;
             }
         }
+
+        List<Record> subRecords = records.subList(subRecordsStartIndex, subRecordsCount);
+        subRecords.stream()
+                .filter(record -> record.getScore() == null || record.getScore() > score)
+                .findFirst()
+                .ifPresent(record -> {
+                    subRecords.add(subRecords.indexOf(record)
+                            , new Record(view.askUserForName(), difficulty, score));
+                    subRecords.remove(subRecords.size() - 1);
+                });
+        recordHandler.saveRecords(records);
     }
 
 }

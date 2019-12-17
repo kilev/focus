@@ -131,10 +131,13 @@ public class ModelService implements IModelService {
     }
 
     private Boolean gameIsWin() {
-        return (Arrays.stream(gameField)
-                .flatMap(Arrays::stream)
-                .filter(cell -> !cell.getBomb())
-                .noneMatch(cell -> cell.getCellType() != CellType.OPENED));
+        if (gameStateModel.getGameStateType() != GameStateType.WIN) {
+            return (Arrays.stream(gameField)
+                    .flatMap(Arrays::stream)
+                    .filter(cell -> !cell.getBomb())
+                    .noneMatch(cell -> cell.getCellType() != CellType.OPENED));
+        }
+        return false;
     }
 
     @Override
