@@ -50,8 +50,8 @@ public class GameFieldView extends JPanel implements Observer<GameStateChangeEve
     }
 
     @Override
-    public void handleEvent(GameStateChangeEvent dto) {
-        switch (dto.getGameState()) {
+    public void handleEvent(GameStateChangeEvent event) {
+        switch (event.getGameState()) {
             case WIN:
             case LOSE:
                 setCellsEnabled(false);

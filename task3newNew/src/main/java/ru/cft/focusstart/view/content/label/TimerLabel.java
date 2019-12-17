@@ -13,7 +13,7 @@ public class TimerLabel extends NumericInfoLabel implements Observer<TimeChangeE
     }
 
     @Override
-    public void handleEvent(TimeChangeEvent timeChanchedDTO) {
-        setValue(timeChanchedDTO.getCurrentTime());
+    public void handleEvent(TimeChangeEvent event) {
+        setValue(event.getCurrentTime());
     }
 }

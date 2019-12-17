@@ -28,11 +28,11 @@ public class ViewCell extends JButton implements Observer<CellChangeEvent>, Resi
     }
 
     @Override
-    public void handleEvent(CellChangeEvent cellChangeDTO) {
-        if (!coordX.equals(cellChangeDTO.getX()) || !coordY.equals(cellChangeDTO.getY())) {
+    public void handleEvent(CellChangeEvent event) {
+        if (!coordX.equals(event.getX()) || !coordY.equals(event.getY())) {
             return;
         }
-        switch (cellChangeDTO.getCellType()) {
+        switch (event.getCellType()) {
             case CLOSED:
                 setImageIconAndResize(IconStorage.CLOSED.getImageIcon());
                 break;
@@ -40,7 +40,7 @@ public class ViewCell extends JButton implements Observer<CellChangeEvent>, Resi
                 setImageIconAndResize(IconStorage.FLAGED.getImageIcon());
                 break;
             case OPENED:
-                setImageIconAndResize(IconStorage.valueOf(IconStorage.OPENED_NUMBER_PREFIX + cellChangeDTO.getBombsAround().toString()).getImageIcon());
+                setImageIconAndResize(IconStorage.valueOf(IconStorage.OPENED_NUMBER_PREFIX + event.getBombsAround().toString()).getImageIcon());
                 break;
             case EXPLODED:
                 setImageIconAndResize(IconStorage.BOMB.getImageIcon());

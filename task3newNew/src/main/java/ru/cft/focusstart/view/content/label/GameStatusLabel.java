@@ -17,8 +17,8 @@ public class GameStatusLabel extends JLabel implements Observer<GameStateChangeE
     }
 
     @Override
-    public void handleEvent(GameStateChangeEvent dto) {
-        switch (dto.getGameState()) {
+    public void handleEvent(GameStateChangeEvent event) {
+        switch (event.getGameState()) {
             case READY_TO_RUN:
             case RUN:
                 setText(DEFAULT_TEXT);

@@ -28,9 +28,9 @@ public class RecordWriter implements Observer<GameStateChangeEvent> {
     }
 
     @Override
-    public void handleEvent(GameStateChangeEvent dto) {
-        if (dto.getGameState() == GameStateType.WIN) {
-            checkToNewRecord(timer.getTime(), dto.getDifficulty());
+    public void handleEvent(GameStateChangeEvent event) {
+        if (event.getGameState() == GameStateType.WIN) {
+            checkToNewRecord(timer.getTime(), event.getDifficulty());
         }
     }
 

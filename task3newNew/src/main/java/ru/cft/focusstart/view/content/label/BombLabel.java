@@ -13,7 +13,7 @@ public class BombLabel extends NumericInfoLabel implements Observer<BombCountCha
     }
 
     @Override
-    public void handleEvent(BombCountChangeEvent bombCountChangeDTO) {
-        setValue(bombCountChangeDTO.getBombCount());
+    public void handleEvent(BombCountChangeEvent event) {
+        setValue(event.getBombCount());
     }
 }
