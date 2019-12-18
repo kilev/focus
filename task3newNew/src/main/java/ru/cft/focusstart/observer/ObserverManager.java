@@ -14,14 +14,14 @@ public class ObserverManager implements IObserverManager {
     private final Map<Class<? extends Event>, List<Observer<? extends Event>>> observers = new HashMap<>();
 
     @Override
-    public void addObserver(Class<? extends Event> eventClass, Observer<? extends Event> observer) {
+    public <T extends Event> void addObserver(Class<T> eventClass, Observer<T> observer) {
         final List<Observer<? extends Event>> listForClass = observers.getOrDefault(eventClass, new ArrayList<>());
         listForClass.add(observer);
         observers.put(eventClass, listForClass);
     }
 
     @Override
-    public void notifyObservers(Event event) {
-        observers.get(event.getClass()).forEach(observer -> observer.handleDto(event));
+    public <T extends Event> void notifyObservers(T event) {
+        observers.get(event.getClass()).forEach(observer -> ((Observer<T>) observer).handleEvent(event));
     }
 }

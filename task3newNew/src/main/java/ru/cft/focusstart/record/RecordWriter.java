@@ -6,32 +6,26 @@ import ru.cft.focusstart.difficulty.Difficulty;
 import ru.cft.focusstart.event.GameStateChangeEvent;
 import ru.cft.focusstart.model.gamestate.GameStateType;
 import ru.cft.focusstart.observer.IObserverManager;
-import ru.cft.focusstart.observer.Observer;
 import ru.cft.focusstart.timer.ITimer;
 import ru.cft.focusstart.view.IView;
 
 import java.util.List;
 
 @Singleton
-public class RecordWriter implements Observer<GameStateChangeEvent> {
+public class RecordWriter {
 
     private final IView view;
-    private final ITimer timer;
     private final IRecordHandler recordHandler;
 
     @Inject
     public RecordWriter(IObserverManager observerManager, IView view, ITimer timer, IRecordHandler recordHandler) {
-        observerManager.addObserver(GameStateChangeEvent.class, this);
+        observerManager.addObserver(GameStateChangeEvent.class, event -> {
+            if (event.getGameState() == GameStateType.WIN) {
+                checkToNewRecord(timer.getTime(), event.getDifficulty());
+            }
+        });
         this.view = view;
-        this.timer = timer;
         this.recordHandler = recordHandler;
-    }
-
-    @Override
-    public void handleEvent(GameStateChangeEvent event) {
-        if (event.getGameState() == GameStateType.WIN) {
-            checkToNewRecord(timer.getTime(), event.getDifficulty());
-        }
     }
 
     private void checkToNewRecord(Integer score, Difficulty difficulty) {

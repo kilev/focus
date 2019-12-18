@@ -4,7 +4,7 @@ import ru.cft.focusstart.event.Event;
 
 public interface IObserverManager {
 
-    void addObserver(Class<? extends Event> eventClass, Observer<? extends Event> observer);
+    <T extends Event> void addObserver(Class<T> eventClass, Observer<T> observer);
 
-    void notifyObservers(Event event);
+    <T extends Event> void notifyObservers(T event);
 }

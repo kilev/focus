@@ -5,7 +5,6 @@ import com.google.inject.Singleton;
 import ru.cft.focusstart.event.GameStateChangeEvent;
 import ru.cft.focusstart.event.TimeChangeEvent;
 import ru.cft.focusstart.observer.IObserverManager;
-import ru.cft.focusstart.observer.Observer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
-public class SmartTimer implements ITimer, Observer<GameStateChangeEvent> {
+public class SmartTimer implements ITimer {
 
     private final IObserverManager observerManager;
 
@@ -25,7 +24,19 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeEvent> {
     @Inject
     public SmartTimer(IObserverManager observerManager) {
         this.observerManager = observerManager;
-        observerManager.addObserver(GameStateChangeEvent.class, this);
+
+        observerManager.addObserver(GameStateChangeEvent.class, event -> {
+            switch (event.getGameState()) {
+                case RUN:
+                    continueTime();
+                    return;
+                case READY_TO_RUN:
+                    resetTime();
+                case LOSE:
+                case WIN:
+                    pause();
+            }
+        });
     }
 
     class Tick implements Runnable {
@@ -37,20 +48,6 @@ public class SmartTimer implements ITimer, Observer<GameStateChangeEvent> {
                 time.getAndIncrement();
             }
             sendNotify();
-        }
-    }
-
-    @Override
-    public void handleEvent(GameStateChangeEvent event) {
-        switch (event.getGameState()) {
-            case RUN:
-                continueTime();
-                return;
-            case READY_TO_RUN:
-                resetTime();
-            case LOSE:
-            case WIN:
-                pause();
         }
     }
 

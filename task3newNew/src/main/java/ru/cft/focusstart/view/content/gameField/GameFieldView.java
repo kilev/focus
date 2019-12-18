@@ -4,14 +4,13 @@ import ru.cft.focusstart.controller.DifficultyController;
 import ru.cft.focusstart.difficulty.DifficultyConfig;
 import ru.cft.focusstart.event.GameStateChangeEvent;
 import ru.cft.focusstart.observer.IObserverManager;
-import ru.cft.focusstart.observer.Observer;
 import ru.cft.focusstart.view.listener.ClickListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class GameFieldView extends JPanel implements Observer<GameStateChangeEvent> {
+public class GameFieldView extends JPanel {
 
     private static final int CELL_PREF_SIZE = 30;
 
@@ -26,7 +25,17 @@ public class GameFieldView extends JPanel implements Observer<GameStateChangeEve
         this.difficultyController = difficultyController;
         this.cellClickListener = cellClickListener;
 
-        observerManager.addObserver(GameStateChangeEvent.class, this);
+        observerManager.addObserver(GameStateChangeEvent.class, event -> {
+            switch (event.getGameState()) {
+                case WIN:
+                case LOSE:
+                    setCellsEnabled(false);
+                    break;
+                case READY_TO_RUN:
+                    setCellsEnabled(true);
+                    break;
+            }
+        });
     }
 
     public void loadCells() {
@@ -46,19 +55,6 @@ public class GameFieldView extends JPanel implements Observer<GameStateChangeEve
                 cells[i][j] = cell;
                 this.add(cell);
             }
-        }
-    }
-
-    @Override
-    public void handleEvent(GameStateChangeEvent event) {
-        switch (event.getGameState()) {
-            case WIN:
-            case LOSE:
-                setCellsEnabled(false);
-                break;
-            case READY_TO_RUN:
-                setCellsEnabled(true);
-                break;
         }
     }
 
