@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 @Slf4j
-public class SocketConnection {
+public class Connection {
 
     private final Socket socket;
     private final PrintWriter writer;
@@ -25,11 +25,11 @@ public class SocketConnection {
     @Setter
     private volatile String login;
 
-    public SocketConnection(String host, Integer port, Long nonActivityConnectionLiveTime, ConnectionListener connectionListener) throws IOException {
+    public Connection(String host, Integer port, Long nonActivityConnectionLiveTime, ConnectionListener connectionListener) throws IOException {
         this(new Socket(host, port), nonActivityConnectionLiveTime, connectionListener);
     }
 
-    public SocketConnection(Socket socket, Long nonActivityConnectionLiveTime, ConnectionListener connectionListener) throws IOException {
+    public Connection(Socket socket, Long nonActivityConnectionLiveTime, ConnectionListener connectionListener) throws IOException {
         this.socket = socket;
         this.nonActivityConnectionLiveTime = nonActivityConnectionLiveTime;
         this.connectionListener = connectionListener;
@@ -42,28 +42,26 @@ public class SocketConnection {
         writer.println(new Gson().toJson(dto));
     }
 
-    public Dto getDtoAction() {
+    public void getDtoAction() {
         try {
-            Dto dto = new Gson().fromJson(reader.readLine(), Dto.class);
-            //parsing dto
-
+            new Gson().fromJson(reader.readLine(), Dto.class).getDtoAction(connectionListener, this);
             updateActivity();
-            return dto;
         } catch (IOException e) {
             disconnect();
             connectionListener.onException(this, e);
-            return null;
         }
     }
 
     public void disconnect() {
-        try {
-            writer.close();
-            reader.close();
-            socket.close();
-            connectionListener.onDisconnect(this);
-        } catch (IOException e) {
-            connectionListener.onException(this, e);
+        if (!socket.isClosed()) {
+            try {
+                writer.close();
+                reader.close();
+                socket.close();
+                connectionListener.onDisconnect(this);
+            } catch (IOException e) {
+                connectionListener.onException(this, e);
+            }
         }
     }
 

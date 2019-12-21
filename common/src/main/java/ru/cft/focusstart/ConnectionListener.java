@@ -4,13 +4,11 @@ public interface ConnectionListener {
 
     void onMessage(String login, String message);
 
-    void onLoginRequest(SocketConnection socketConnection, String login);
+    void onLoginRequest(String login, Connection connection);
 
-    void onLiginResponse(boolean confirmed);
+    void onLoginResponse(boolean confirmed);
 
-    void onDisconnectRequest(SocketConnection socketConnection);
+    void onDisconnect(Connection connection);
 
-    void onDisconnect(SocketConnection socketConnection);
-
-    void onException(SocketConnection socketConnection, Exception e);
+    void onException(Connection connection, Exception e);
 }

@@ -1,7 +1,7 @@
 package ru.cft.focusstart;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.cft.focusstart.dto.Dto;
+import ru.cft.focusstart.dto.MessageDto;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ServerCommunicationService {
 
     private final chatMonitor chatMonitor;
-    private SocketConnection connection;
+    private Connection connection;
 
     private Thread socketCommunicationThread;
 
@@ -18,7 +18,7 @@ public class ServerCommunicationService {
     }
 
     public void sendMessage(String message) {
-        connection.sendDto(new Dto(connection.getLogin(), Status.MESSAGE, message));
+        connection.sendDto(new MessageDto(connection.getLogin(), Status.MESSAGE, message));
     }
 
     public void connectToServer(String host, Integer port, String login) {
@@ -27,24 +27,24 @@ public class ServerCommunicationService {
             socketCommunicationThread.interrupt();
         }
         try {
-            connection = new SocketConnection(host, port, null, new ConnectionListener() {
+            connection = new Connection(host, port, null, new ConnectionListener() {
                 @Override
-                public void onDtoSended(SocketConnection socketConnection, Dto dto) {
+                public void onDtoSended(Connection socketConnection, MessageDto dto) {
                     log.info("Dto: {} was sended to server.", dto);
                 }
 
                 @Override
-                public void onDtoReaded(SocketConnection socketConnection, Dto dto) {
+                public void onDtoReaded(Connection socketConnection, MessageDto dto) {
                     log.info("Dto: {} was readed from server", dto);
                 }
 
                 @Override
-                public void onDisconnect(SocketConnection socketConnection) {
+                public void onDisconnect(Connection connection) {
                     log.info("ti otvalilsya(");
                 }
 
                 @Override
-                public void onException(SocketConnection socketConnection, Exception e) {
+                public void onException(Connection connection, Exception e) {
                     log.error("Error in SocketConnection", e);
                 }
             });
@@ -56,10 +56,10 @@ public class ServerCommunicationService {
     }
 
     private void tryLoginAccept(String login) {
-        connection.sendDto(new Dto(login, Status.CONFIRM_LOGIN_REQUEST, null));
+        connection.sendDto(new MessageDto(login, Status.CONFIRM_LOGIN_REQUEST, null));
         while (!connection.isAuthorized()) {
             if (connection.isAvailable()) {
-                Dto inputDto = connection.getDtoAction();
+                MessageDto inputDto = connection.getDtoAction();
                 if (inputDto.getStatus() == Status.OK) {
                     connection.setLogin(login);
                 } else if (inputDto.getStatus() == Status.BAD_LOGIN) {
@@ -73,7 +73,7 @@ public class ServerCommunicationService {
         socketCommunicationThread = new Thread(() -> {
             while (!socketCommunicationThread.isInterrupted()) {
                 if (connection.isConnected() && connection.isAvailable()) {
-                    Dto inputDto = connection.getDtoAction();
+                    MessageDto inputDto = connection.getDtoAction();
                     if (inputDto.getStatus() == Status.MESSAGE) {
                         chatMonitor.addMessage(inputDto.getLogin(), inputDto.getMessage());
                     }
