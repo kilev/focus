@@ -47,7 +47,7 @@ class Server extends ConnectionListenerAdapter {
                 connection.setLogin(login);
                 sendDtoToAllAuthorizedConnections(new MessageDto(property.getServerLogin(), "User: " + login + " join to chat."));
             }
-            connection.sendDto(new LoginResponseDto(loginAccepted));
+            sendDto(connection, new LoginResponseDto(login, loginAccepted));
         }
     }
 
@@ -101,7 +101,11 @@ class Server extends ConnectionListenerAdapter {
     private void sendDtoToAllAuthorizedConnections(Dto dto) {
         connections.stream()
                 .filter(Connection::isAuthorized)
-                .forEach(connection -> connection.sendDto(dto));
+                .forEach(connection -> sendDto(connection, dto));
+    }
+
+    private void sendDto(Connection connection, Dto dto) {
+        connection.sendDto(dto);
     }
 
     private void openServerSocket() {

@@ -1,87 +1,75 @@
 package ru.cft.focusstart;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.cft.focusstart.dto.Dto;
+import ru.cft.focusstart.dto.LoginRequestDto;
 import ru.cft.focusstart.dto.MessageDto;
 
 import java.io.IOException;
 
 @Slf4j
-public class ServerCommunicationService {
+public class ServerCommunicationService extends ConnectionListenerAdapter {
 
     private final chatMonitor chatMonitor;
     private Connection connection;
-
-    private Thread socketCommunicationThread;
+    private Thread serverListenerThread;
 
     ServerCommunicationService(chatMonitor chatMonitor) {
         this.chatMonitor = chatMonitor;
     }
 
-    public void sendMessage(String message) {
-        connection.sendDto(new MessageDto(connection.getLogin(), Status.MESSAGE, message));
-    }
-
-    public void connectToServer(String host, Integer port, String login) {
-        if (connection != null) {
-            connection.disconnect();
-            socketCommunicationThread.interrupt();
-        }
+    public void newConnection(String host, Integer port, String login) {
         try {
-            connection = new Connection(host, port, null, new ConnectionListener() {
-                @Override
-                public void onDtoSended(Connection socketConnection, MessageDto dto) {
-                    log.info("Dto: {} was sended to server.", dto);
-                }
-
-                @Override
-                public void onDtoReaded(Connection socketConnection, MessageDto dto) {
-                    log.info("Dto: {} was readed from server", dto);
-                }
-
-                @Override
-                public void onDisconnect(Connection connection) {
-                    log.info("ti otvalilsya(");
-                }
-
-                @Override
-                public void onException(Connection connection, Exception e) {
-                    log.error("Error in SocketConnection", e);
-                }
-            });
+            connection = new Connection(host, port, null, this);
+            sendDto(new LoginRequestDto(login));
         } catch (IOException e) {
             log.error("socket connection error", e);
         }
-        tryLoginAccept(login);
-        startListenServer();
     }
 
-    private void tryLoginAccept(String login) {
-        connection.sendDto(new MessageDto(login, Status.CONFIRM_LOGIN_REQUEST, null));
-        while (!connection.isAuthorized()) {
-            if (connection.isAvailable()) {
-                MessageDto inputDto = connection.getDtoAction();
-                if (inputDto.getStatus() == Status.OK) {
-                    connection.setLogin(login);
-                } else if (inputDto.getStatus() == Status.BAD_LOGIN) {
-                    //show user that login is bad;
-                }
-            }
+    public void sendMessage(String message) {
+        if (connection != null && connection.isAuthorized()) {
+            sendDto(new MessageDto(connection.getLogin(), message));
         }
     }
 
-    private void startListenServer() {
-        socketCommunicationThread = new Thread(() -> {
-            while (!socketCommunicationThread.isInterrupted()) {
-                if (connection.isConnected() && connection.isAvailable()) {
-                    MessageDto inputDto = connection.getDtoAction();
-                    if (inputDto.getStatus() == Status.MESSAGE) {
-                        chatMonitor.addMessage(inputDto.getLogin(), inputDto.getMessage());
-                    }
-                }
-
-            }
-        });
-        socketCommunicationThread.start();
+    @Override
+    public void onMessage(String login, String message) {
+        chatMonitor.addMessage(login, message);
     }
 
+    @Override
+    public void onLoginResponse(String login, boolean accepted) {
+        if (accepted) {
+            connection.setLogin(login);
+            startListenServer();
+        }
+    }
+
+    @Override
+    public void onDisconnect(Connection connection) {
+        serverListenerThread.interrupt();
+        connection.disconnect();
+        log.info("Disconnect from server.");
+    }
+
+    @Override
+    public void onException(Connection connection, Exception e) {
+
+    }
+
+    private void startListenServer() {
+        serverListenerThread = new Thread(() -> {
+            while (!serverListenerThread.isInterrupted()) {
+                if (connection.isAvailable()) {
+                    connection.getDtoAction();
+                }
+            }
+        });
+        serverListenerThread.start();
+    }
+
+    private void sendDto(Dto dto) {
+        connection.sendDto(dto);
+    }
 }

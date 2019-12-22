@@ -6,7 +6,7 @@ public interface ConnectionListener {
 
     void onLoginRequest(String login, Connection connection);
 
-    void onLoginResponse(boolean confirmed);
+    void onLoginResponse(String login, boolean confirmed);
 
     void onDisconnect(Connection connection);
 

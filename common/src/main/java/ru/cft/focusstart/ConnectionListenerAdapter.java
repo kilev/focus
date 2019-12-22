@@ -13,7 +13,7 @@ public class ConnectionListenerAdapter implements ConnectionListener {
     }
 
     @Override
-    public void onLoginResponse(boolean confirmed) {
+    public void onLoginResponse(String login, boolean confirmed) {
 
     }
 

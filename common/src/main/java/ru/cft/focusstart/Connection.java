@@ -1,6 +1,7 @@
 package ru.cft.focusstart;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +39,20 @@ public class Connection {
         lastActivityTime = System.currentTimeMillis();
     }
 
-    public void sendDto(Dto dto) {
-        writer.println(new Gson().toJson(dto));
+    public synchronized void sendDto(Dto dto) {
+        try {
+            writer.println(new ObjectMapper().writeValueAsString(dto));
+            log.info("Sended dto: {}", dto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void getDtoAction() {
+    public synchronized void getDtoAction() {
         try {
-            new Gson().fromJson(reader.readLine(), Dto.class).getDtoAction(connectionListener, this);
+            Dto dtoToRead = new ObjectMapper().readValue(reader.readLine(), Dto.class);
+            dtoToRead.getDtoAction(connectionListener, this);
+            log.info("readed dto: {}", dtoToRead);
             updateActivity();
         } catch (IOException e) {
             disconnect();
@@ -52,7 +60,7 @@ public class Connection {
         }
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
         if (!socket.isClosed()) {
             try {
                 writer.close();
@@ -65,7 +73,7 @@ public class Connection {
         }
     }
 
-    public boolean isAvailable() {
+    public synchronized boolean isAvailable() {
         try {
             return reader.ready();
         } catch (IOException e) {
@@ -75,15 +83,11 @@ public class Connection {
         }
     }
 
-    public boolean isAuthorized() {
+    public synchronized boolean isAuthorized() {
         return login != null;
     }
 
-    public boolean isConnected() {
-        return socket.isConnected();
-    }
-
-    public boolean isExpired() {
+    public synchronized boolean isExpired() {
         if (nonActivityConnectionLiveTime == null) {
             return false;
         } else {
@@ -96,7 +100,7 @@ public class Connection {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         if (isAuthorized()) {
             return login;
         } else {

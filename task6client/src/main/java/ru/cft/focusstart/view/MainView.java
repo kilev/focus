@@ -49,7 +49,7 @@ public class MainView {
         mainPanel.add(portTextField, ConstraintsUtils.getConstraints(3, 0, 1, 1, GridBagConstraints.WEST));
         mainPanel.add(loginLabel, ConstraintsUtils.getConstraints(4, 0, 1, 1, GridBagConstraints.WEST));
         mainPanel.add(loginTextField, ConstraintsUtils.getConstraints(5, 0, 1, 1, GridBagConstraints.WEST));
-        connectButton.addActionListener(e -> socketService.connectToServer(hostTextField.getText(), Integer.valueOf(portTextField.getText()), loginTextField.getText()));
+        connectButton.addActionListener(e -> socketService.newConnection(hostTextField.getText(), Integer.valueOf(portTextField.getText()), loginTextField.getText()));
         mainPanel.add(connectButton, ConstraintsUtils.getConstraints(6, 0, 1, 1, GridBagConstraints.EAST));
         messagesTextArea.setPreferredSize(MESSAGE_AREA_DIM);
         mainPanel.add(messagesTextArea, ConstraintsUtils.getConstraints(0, 1, 1, 7, GridBagConstraints.CENTER));
