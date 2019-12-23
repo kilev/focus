@@ -5,17 +5,19 @@ import lombok.Value;
 import ru.cft.focusstart.Connection;
 import ru.cft.focusstart.ConnectionListener;
 
+import java.util.List;
+
 @Value
-public class LoginRequestDto implements Dto {
+public class UserOnlineListDto implements Dto {
 
-    private final String login;
+    private final List<String> userInOnline;
 
-    public LoginRequestDto(@JsonProperty("login") String login) {
-        this.login = login;
+    public UserOnlineListDto(@JsonProperty("userInOnline") List<String> userInOnline) {
+        this.userInOnline = userInOnline;
     }
 
     @Override
     public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
-        connectionListener.onLoginRequest(login, connection);
+
     }
 }

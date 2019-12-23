@@ -7,9 +7,8 @@ import ru.cft.focusstart.dto.MessageDto;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,15 +17,15 @@ import java.util.concurrent.TimeUnit;
 class Server extends ConnectionListenerAdapter {
 
     private final Property property = new Property();
-    private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
+    private final List<Connection> connections = new CopyOnWriteArrayList<>();
     private Thread connectionCheckingThread;
-    private Thread messageCheckingThread;
+    private Thread requestsCheckingThread;
     private ServerSocket serverSocket;
 
     Server() {
         openServerSocket();
         startMonitoringConnections();
-        startMonitoringInputDto();
+        startMonitoringInputRequests();
         startConnectionsCollectorMonitoring();
         log.info("Server is running.");
     }
@@ -45,10 +44,15 @@ class Server extends ConnectionListenerAdapter {
                     .noneMatch(someLogin -> someLogin.equals(login));
             if (loginAccepted) {
                 connection.setLogin(login);
-                sendDtoToAllAuthorizedConnections(new MessageDto(property.getServerLogin(), "User: " + login + " join to chat."));
+                sendDtoToAllAuthorizedConnections(new MessageDto(property.getServerLogin(), login + " join to chat."));
             }
             sendDto(connection, new LoginResponseDto(login, loginAccepted));
         }
+    }
+
+    @Override
+    public void onDisconnectRequest(Connection connection) {
+        connection.disconnect();
     }
 
     @Override
@@ -69,27 +73,35 @@ class Server extends ConnectionListenerAdapter {
                 try {
                     Connection newSocketConnection = new Connection(serverSocket.accept(),
                             TimeUnit.MILLISECONDS.convert(property.getNonActivityConnectionLiveTime(), TimeUnit.MINUTES), this);
-                    synchronized (this) {
-                        connections.add(newSocketConnection);
-                    }
+                    connections.add(newSocketConnection);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error to accept connection.", e);
+                }
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    log.error("Monitoring Thread Error.");
                 }
             }
         });
         connectionCheckingThread.start();
     }
 
-    private void startMonitoringInputDto() {
+    private void startMonitoringInputRequests() {
         ExecutorService executorService = Executors.newFixedThreadPool(property.getMessageMonitoringThreadCount());
-        messageCheckingThread = new Thread(() -> {
-            while (!messageCheckingThread.isInterrupted()) {
+        requestsCheckingThread = new Thread(() -> {
+            while (!requestsCheckingThread.isInterrupted()) {
                 connections.stream()
                         .filter(Connection::isAvailable)
-                        .forEach(connection -> executorService.execute(connection::getDtoAction));
+                        .forEach(connection -> executorService.execute(connection::callRequestAction));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
-        messageCheckingThread.start();
+        requestsCheckingThread.start();
     }
 
     private void startConnectionsCollectorMonitoring() {

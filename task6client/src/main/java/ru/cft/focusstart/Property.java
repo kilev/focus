@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
-public enum PropertyManager {
+public enum Property {
     DEFAULT_HOST("server.host"),
     DEFAULT_PORT("server.port"),
     DEFAULT_LOGIN("login.default");
@@ -17,7 +17,7 @@ public enum PropertyManager {
     @Getter
     private final String value;
 
-    PropertyManager(String propertyKey) {
+    Property(String propertyKey) {
         value = getPropertyValue(propertyKey);
     }
 

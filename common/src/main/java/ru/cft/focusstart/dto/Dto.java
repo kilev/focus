@@ -13,9 +13,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @JsonSubTypes.Type(value = MessageDto.class, name = "Message"),
         @JsonSubTypes.Type(value = LoginRequestDto.class, name = "LoginRequest"),
         @JsonSubTypes.Type(value = LoginResponseDto.class, name = "LoginResponse"),
-        @JsonSubTypes.Type(value = PingDto.class, name = "Ping")
+        @JsonSubTypes.Type(value = PingDto.class, name = "Ping"),
+        @JsonSubTypes.Type(value = DisconnectRequestDto.class, name = "DisconnectRequestDto"),
+        @JsonSubTypes.Type(value = UserOnlineListDto.class, name = "UserOnlineListDto")
 })
 public interface Dto {
 
-    void getDtoAction(ConnectionListener connectionListener, Connection socketConnection);
+    void getDtoAction(ConnectionListener connectionListener, Connection connection);
 }

@@ -1,6 +1,5 @@
 package ru.cft.focusstart;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,15 +15,17 @@ import java.net.Socket;
 @Slf4j
 public class Connection {
 
+    private static final String UN_AUTHORIZED_LOGIN = "anonymous";
+
     private final Socket socket;
     private final PrintWriter writer;
     private final BufferedReader reader;
     private final Long nonActivityConnectionLiveTime;
     private final ConnectionListener connectionListener;
-    private volatile long lastActivityTime;
+    private long lastActivityTime;
     @Getter
     @Setter
-    private volatile String login;
+    private String login;
 
     public Connection(String host, Integer port, Long nonActivityConnectionLiveTime, ConnectionListener connectionListener) throws IOException {
         this(new Socket(host, port), nonActivityConnectionLiveTime, connectionListener);
@@ -39,41 +40,40 @@ public class Connection {
         lastActivityTime = System.currentTimeMillis();
     }
 
-    public synchronized void sendDto(Dto dto) {
+    public void sendDto(Dto dto) {
         try {
             writer.println(new ObjectMapper().writeValueAsString(dto));
             log.info("Sended dto: {}", dto);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
+            disconnect();
             e.printStackTrace();
         }
     }
 
-    public synchronized void getDtoAction() {
+    public void callRequestAction() {
         try {
-            Dto dtoToRead = new ObjectMapper().readValue(reader.readLine(), Dto.class);
-            dtoToRead.getDtoAction(connectionListener, this);
-            log.info("readed dto: {}", dtoToRead);
+            Dto readedDto = new ObjectMapper().readValue(reader.readLine(), Dto.class);
+            readedDto.getDtoAction(connectionListener, this);
+            log.info("readed dto: {}", readedDto);
             updateActivity();
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             disconnect();
             connectionListener.onException(this, e);
         }
+
     }
 
-    public synchronized void disconnect() {
+    public void disconnect() {
         if (!socket.isClosed()) {
-            try {
-                writer.close();
-                reader.close();
-                socket.close();
-                connectionListener.onDisconnect(this);
+            try (PrintWriter writer1 = writer; BufferedReader reader1 = reader; Socket socket1 = socket) {
             } catch (IOException e) {
-                connectionListener.onException(this, e);
+                e.printStackTrace();
             }
+            connectionListener.onDisconnect(this);
         }
     }
 
-    public synchronized boolean isAvailable() {
+    public boolean isAvailable() {
         try {
             return reader.ready();
         } catch (IOException e) {
@@ -83,11 +83,11 @@ public class Connection {
         }
     }
 
-    public synchronized boolean isAuthorized() {
+    public boolean isAuthorized() {
         return login != null;
     }
 
-    public synchronized boolean isExpired() {
+    public boolean isExpired() {
         if (nonActivityConnectionLiveTime == null) {
             return false;
         } else {
@@ -100,11 +100,11 @@ public class Connection {
     }
 
     @Override
-    public synchronized String toString() {
+    public String toString() {
         if (isAuthorized()) {
             return login;
         } else {
-            return "anonymous";
+            return UN_AUTHORIZED_LOGIN;
         }
     }
 }

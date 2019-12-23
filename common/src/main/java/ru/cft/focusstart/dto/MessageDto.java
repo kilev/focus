@@ -17,7 +17,7 @@ public class MessageDto implements Dto {
     }
 
     @Override
-    public void getDtoAction(ConnectionListener connectionListener, Connection socketConnection) {
+    public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
         connectionListener.onMessage(login, message);
     }
 }

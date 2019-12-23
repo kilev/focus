@@ -1,5 +1,7 @@
 package ru.cft.focusstart;
 
+import java.util.List;
+
 public class ConnectionListenerAdapter implements ConnectionListener {
 
     @Override
@@ -14,6 +16,16 @@ public class ConnectionListenerAdapter implements ConnectionListener {
 
     @Override
     public void onLoginResponse(String login, boolean confirmed) {
+
+    }
+
+    @Override
+    public void onUserInOnlineList(List<String> userInOnlineList) {
+
+    }
+
+    @Override
+    public void onDisconnectRequest(Connection connection) {
 
     }
 

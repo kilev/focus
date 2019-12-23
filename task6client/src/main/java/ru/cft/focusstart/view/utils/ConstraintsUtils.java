@@ -19,8 +19,8 @@ public final class ConstraintsUtils {
         constraints.gridheight = gridheight;
         constraints.gridwidth = gridwidth;
         constraints.anchor = anchor;
-//        constraints.weightx = DEFAULT_WEIGHT;
-//        constraints.weighty = DEFAULT_WEIGHT;
+        constraints.weightx = DEFAULT_WEIGHT;
+        constraints.weighty = DEFAULT_WEIGHT;
         return constraints;
     }
 }
