@@ -10,19 +10,19 @@ import java.util.Date;
 @Value
 public class MessageDto implements Dto {
 
-    private final String login;
+    private final String author;
     private final String message;
-    private final long messageId;
-    private final Date messageTime;
+    private final Long id;
+    private final Date time;
 
-    public MessageDto(@JsonProperty("login") String login,
+    public MessageDto(@JsonProperty("author") String author,
                       @JsonProperty("message") String message,
-                      @JsonProperty("messageId") long messageId,
-                      @JsonProperty("messageTime") Date messageTime) {
-        this.login = login;
+                      @JsonProperty("id") Long messageId,
+                      @JsonProperty("time") Date messageTime) {
+        this.author = author;
         this.message = message;
-        this.messageId = messageId;
-        this.messageTime = messageTime;
+        this.id = messageId;
+        this.time = messageTime;
     }
 
     @Override

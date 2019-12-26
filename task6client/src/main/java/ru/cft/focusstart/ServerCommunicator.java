@@ -2,22 +2,22 @@ package ru.cft.focusstart;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.cft.focusstart.dto.DisconnectRequestDto;
-import ru.cft.focusstart.dto.Dto;
-import ru.cft.focusstart.dto.LoginRequestDto;
-import ru.cft.focusstart.dto.MessageDto;
+import ru.cft.focusstart.dto.*;
 import ru.cft.focusstart.view.MainView;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ServerCommunicator extends ConnectionListenerAdapter {
 
     private final MainView view;
+    private final MessageReceiver messageReceiver = new MessageReceiver(view);
+    private ScheduledExecutorService serverListener;
     private Connection connection;
-    private Thread serverListenerThread;
 
     public void newConnection(String host, Integer port, String login) {
         try {
@@ -37,33 +37,32 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
 
     public void sendMessage(String message) {
         if (connection != null && connection.isAuthorized()) {
-            sendDto(new MessageDto(connection.getLogin(), message));
+            sendDto(createMessage(connection.getLogin(), message));
         }
     }
 
     @Override
-    public void onMessage(String login, String message) {
-        view.addMessage(login, message);
+    public void onMessage(MessageDto messageDto, Connection connection) {
+        messageReceiver.receive(messageDto);
     }
 
     @Override
-    public void onLoginResponse(String login, boolean accepted) {
-        if (accepted) {
-            connection.setLogin(login);
+    public void onLoginResponse(LoginResponseDto loginResponseDto, Connection connection) {
+        if (loginResponseDto.isAccepted()) {
+            connection.setLogin(loginResponseDto.getLogin());
         } else {
             view.showInfoPane("BAD LOGIN!");
         }
     }
 
     @Override
-    public void onUserOnline(List<String> userOnline) {
+    public void onUserOnline(UserOnlineDto userOnlineDto, Connection connection) {
 
     }
 
-
     @Override
     public void onDisconnect(Connection connection) {
-        serverListenerThread.interrupt();
+        serverListener.shutdown();
         log.info("Disconnect from server.");
     }
 
@@ -73,14 +72,16 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
     }
 
     private void startListenServer() {
-        serverListenerThread = new Thread(() -> {
-            while (!serverListenerThread.isInterrupted()) {
-                if (connection.isAvailable()) {
-                    connection.callRequestAction();
-                }
+        serverListener = Executors.newSingleThreadScheduledExecutor();
+        serverListener.scheduleAtFixedRate(() -> {
+            if (connection.isAvailable()) {
+                connection.callRequestAction();
             }
-        });
-        serverListenerThread.start();
+        }, 0, 200, TimeUnit.MILLISECONDS);
+    }
+
+    private MessageDto createMessage(String author, String message) {
+        return new MessageDto(author, message, null, null);
     }
 
     private void sendDto(Dto dto) {

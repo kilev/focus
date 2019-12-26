@@ -6,7 +6,6 @@ import ru.cft.focusstart.dto.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -17,6 +16,7 @@ class Server extends ConnectionListenerAdapter {
     private final Property property;
     private final List<Connection> connections = new CopyOnWriteArrayList<>();
     private ServerSocket serverSocket;
+    private final ExecutorService sendExecutor = Executors.newFixedThreadPool(10);
 
     void start() {
         openServerSocket();
@@ -28,7 +28,7 @@ class Server extends ConnectionListenerAdapter {
 
     @Override
     public void onMessage(MessageDto messageDto, Connection connection) {
-        sendDtoToAllAuthorizedConnections(createMessage(messageDto.getLogin(), messageDto.getMessage()));
+        sendDtoToAllAuthorizedConnections(createMessage(messageDto.getAuthor(), messageDto.getMessage()));
     }
 
     @Override
@@ -97,12 +97,12 @@ class Server extends ConnectionListenerAdapter {
                 .forEach(connection -> sendDto(connection, dto));
     }
 
-    private MessageDto createMessage(String login, String message) {
-        return new MessageDto(login, message, 0, new Date());
+    private void sendDto(Connection connection, Dto dto) {
+        sendExecutor.execute(() -> connection.sendDto(dto));
     }
 
-    private void sendDto(Connection connection, Dto dto) {
-        connection.sendDto(dto);
+    private MessageDto createMessage(String author, String message) {
+        return Message.create(author, message);
     }
 
     private void openServerSocket() {

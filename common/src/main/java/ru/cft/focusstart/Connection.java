@@ -15,7 +15,7 @@ import java.net.Socket;
 @Slf4j
 public class Connection {
 
-    private static final String UN_AUTHORIZED_LOGIN = "anonymous";
+    private static final String UN_AUTHORIZED_LOGIN = "Anonymous";
 
     private final Socket socket;
     private final PrintWriter writer;
