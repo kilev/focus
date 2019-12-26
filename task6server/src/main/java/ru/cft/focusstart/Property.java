@@ -12,7 +12,8 @@ import java.util.Properties;
 @Getter
 class Property {
 
-    private int messageMonitoringThreadCount;
+    private int requestMonitoringThreadCount;
+    private int requestMonitoringPeriod;
     private String serverLogin;
     private int serverPort;
     private long nonActivityConnectionLiveTime;
@@ -24,7 +25,8 @@ class Property {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
             Properties properties = new Properties();
             properties.load(inputStream);
-            messageMonitoringThreadCount = Integer.parseInt(properties.getProperty("messageMonitoringThreadCount"));
+            requestMonitoringThreadCount = Integer.parseInt(properties.getProperty("server.eventMonitoring.threadCount"));
+            requestMonitoringPeriod = Integer.parseInt(properties.getProperty("server.eventMonitoring.periodMillis"));
             serverLogin = properties.getProperty("server.login");
             serverPort = Integer.parseInt(properties.getProperty("server.port"));
             nonActivityConnectionLiveTime = Integer.parseInt(properties.getProperty("connection.nonActivityLiveTime"));

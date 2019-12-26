@@ -9,6 +9,6 @@ public class DisconnectRequestDto implements Dto {
 
     @Override
     public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
-        connectionListener.onDisconnectRequest(connection);
+        connectionListener.onDisconnectRequest(this, connection);
     }
 }

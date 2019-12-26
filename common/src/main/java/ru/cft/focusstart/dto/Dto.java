@@ -15,7 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @JsonSubTypes.Type(value = LoginResponseDto.class, name = "LoginResponse"),
         @JsonSubTypes.Type(value = PingDto.class, name = "Ping"),
         @JsonSubTypes.Type(value = DisconnectRequestDto.class, name = "DisconnectRequestDto"),
-        @JsonSubTypes.Type(value = UserOnlineListDto.class, name = "UserOnlineListDto")
+        @JsonSubTypes.Type(value = UserOnlineDto.class, name = "UserOnlineDto")
 })
 public interface Dto {
 

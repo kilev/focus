@@ -1,18 +1,18 @@
 package ru.cft.focusstart;
 
-import java.util.List;
+import ru.cft.focusstart.dto.*;
 
 public interface ConnectionListener {
 
-    void onMessage(String login, String message);
+    void onMessage(MessageDto messageDto, Connection connection);
 
-    void onLoginRequest(String login, Connection connection);
+    void onLoginRequest(LoginRequestDto loginRequestDto, Connection connection);
 
-    void onLoginResponse(String login, boolean confirmed);
+    void onLoginResponse(LoginResponseDto loginResponseDto, Connection connection);
 
-    void onUserInOnlineList(List<String> userInOnlineList);
+    void onUserOnline(UserOnlineDto userOnlineDto, Connection connection);
 
-    void onDisconnectRequest(Connection connection);
+    void onDisconnectRequest(DisconnectRequestDto disconnectRequestDto, Connection connection);
 
     void onDisconnect(Connection connection);
 

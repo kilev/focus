@@ -1,57 +1,54 @@
 package ru.cft.focusstart;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.cft.focusstart.dto.Dto;
-import ru.cft.focusstart.dto.LoginResponseDto;
-import ru.cft.focusstart.dto.MessageDto;
+import ru.cft.focusstart.dto.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
+@RequiredArgsConstructor
 class Server extends ConnectionListenerAdapter {
 
-    private final Property property = new Property();
+    private final Property property;
     private final List<Connection> connections = new CopyOnWriteArrayList<>();
-    private Thread connectionCheckingThread;
-    private Thread requestsCheckingThread;
     private ServerSocket serverSocket;
 
-    Server() {
+    void start() {
         openServerSocket();
         startMonitoringConnections();
         startMonitoringInputRequests();
-        startConnectionsCollectorMonitoring();
+        startExpiredConnectionsMonitoring();
         log.info("Server is running.");
     }
 
     @Override
-    public void onMessage(String login, String message) {
-        sendDtoToAllAuthorizedConnections(new MessageDto(login, message));
+    public void onMessage(MessageDto messageDto, Connection connection) {
+        sendDtoToAllAuthorizedConnections(createMessage(messageDto.getLogin(), messageDto.getMessage()));
     }
 
     @Override
-    public void onLoginRequest(String login, Connection connection) {
+    public void onLoginRequest(LoginRequestDto loginRequestDto, Connection connection) {
         if (!connection.isAuthorized()) {
+            String newLogin = loginRequestDto.getLogin();
             boolean loginAccepted = connections.stream()
                     .filter(Connection::isAuthorized)
                     .map(Connection::getLogin)
-                    .noneMatch(someLogin -> someLogin.equals(login));
+                    .noneMatch(someLogin -> someLogin.equals(newLogin));
             if (loginAccepted) {
-                connection.setLogin(login);
-                sendDtoToAllAuthorizedConnections(new MessageDto(property.getServerLogin(), login + " join to chat."));
+                connection.setLogin(newLogin);
+                sendDtoToAllAuthorizedConnections(createMessage(property.getServerLogin(), newLogin + " join to chat."));
             }
-            sendDto(connection, new LoginResponseDto(login, loginAccepted));
+            sendDto(connection, new LoginResponseDto(newLogin, loginAccepted));
         }
     }
 
     @Override
-    public void onDisconnectRequest(Connection connection) {
+    public void onDisconnectRequest(DisconnectRequestDto disconnectRequestDto, Connection connection) {
         connection.disconnect();
     }
 
@@ -59,7 +56,7 @@ class Server extends ConnectionListenerAdapter {
     public void onDisconnect(Connection connection) {
         connections.remove(connection);
         log.info("Connection: {} was disconnected.", connection);
-        sendDtoToAllAuthorizedConnections(new MessageDto(property.getServerLogin(), "User: " + connection.getLogin() + " left from chat."));
+        sendDtoToAllAuthorizedConnections(createMessage(property.getServerLogin(), "User: " + connection.getLogin() + " left from chat."));
     }
 
     @Override
@@ -68,43 +65,27 @@ class Server extends ConnectionListenerAdapter {
     }
 
     private void startMonitoringConnections() {
-        connectionCheckingThread = new Thread(() -> {
-            while (!connectionCheckingThread.isInterrupted()) {
-                try {
-                    Connection newSocketConnection = new Connection(serverSocket.accept(),
-                            TimeUnit.MILLISECONDS.convert(property.getNonActivityConnectionLiveTime(), TimeUnit.MINUTES), this);
-                    connections.add(newSocketConnection);
-                } catch (IOException e) {
-                    log.error("Error to accept connection.", e);
-                }
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    log.error("Monitoring Thread Error.");
-                }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Connection newSocketConnection = new Connection(serverSocket.accept(),
+                        TimeUnit.MILLISECONDS.convert(property.getNonActivityConnectionLiveTime(), TimeUnit.MINUTES), this);
+                connections.add(newSocketConnection);
+            } catch (IOException e) {
+                log.error("Error to accept connection.", e);
             }
         });
-        connectionCheckingThread.start();
     }
 
     private void startMonitoringInputRequests() {
-        ExecutorService executorService = Executors.newFixedThreadPool(property.getMessageMonitoringThreadCount());
-        requestsCheckingThread = new Thread(() -> {
-            while (!requestsCheckingThread.isInterrupted()) {
-                connections.stream()
-                        .filter(Connection::isAvailable)
-                        .forEach(connection -> executorService.execute(connection::callRequestAction));
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        requestsCheckingThread.start();
+        ExecutorService requestExecutorService = Executors.newFixedThreadPool(property.getRequestMonitoringThreadCount());
+        ScheduledExecutorService requestMonitoringService = Executors.newSingleThreadScheduledExecutor();
+        requestMonitoringService.scheduleAtFixedRate(() -> connections.stream()
+                .filter(Connection::isAvailable)
+                .forEach(connection -> requestExecutorService
+                        .execute(connection::callRequestAction)), 0, property.getRequestMonitoringPeriod(), TimeUnit.MILLISECONDS);
     }
 
-    private void startConnectionsCollectorMonitoring() {
+    private void startExpiredConnectionsMonitoring() {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> connections.stream()
                 .filter(Connection::isExpired)
                 .forEach(Connection::disconnect), 0, property.getConnectionCollectCheckTime(), TimeUnit.MINUTES);
@@ -114,6 +95,10 @@ class Server extends ConnectionListenerAdapter {
         connections.stream()
                 .filter(Connection::isAuthorized)
                 .forEach(connection -> sendDto(connection, dto));
+    }
+
+    private MessageDto createMessage(String login, String message) {
+        return new MessageDto(login, message, 0, new Date());
     }
 
     private void sendDto(Connection connection, Dto dto) {

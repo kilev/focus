@@ -16,6 +16,6 @@ public class LoginRequestDto implements Dto {
 
     @Override
     public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
-        connectionListener.onLoginRequest(login, connection);
+        connectionListener.onLoginRequest(this, connection);
     }
 }

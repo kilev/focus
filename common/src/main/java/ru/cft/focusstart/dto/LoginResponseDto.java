@@ -18,6 +18,6 @@ public class LoginResponseDto implements Dto {
 
     @Override
     public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
-        connectionListener.onLoginResponse(login, accepted);
+        connectionListener.onLoginResponse(this, connection);
     }
 }

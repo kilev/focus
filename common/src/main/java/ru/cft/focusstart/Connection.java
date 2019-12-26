@@ -40,7 +40,7 @@ public class Connection {
         lastActivityTime = System.currentTimeMillis();
     }
 
-    public void sendDto(Dto dto) {
+    public synchronized void sendDto(Dto dto) {
         try {
             writer.println(new ObjectMapper().writeValueAsString(dto));
             log.info("Sended dto: {}", dto);
@@ -50,21 +50,23 @@ public class Connection {
         }
     }
 
-    public void callRequestAction() {
-        try {
-            Dto readedDto = new ObjectMapper().readValue(reader.readLine(), Dto.class);
-            readedDto.getDtoAction(connectionListener, this);
-            log.info("readed dto: {}", readedDto);
-            updateActivity();
-        } catch (IOException | IllegalArgumentException e) {
-            disconnect();
-            connectionListener.onException(this, e);
+    public synchronized void callRequestAction() {
+        if (isAvailable()) {
+            try {
+                Dto readedDto = new ObjectMapper().readValue(reader.readLine(), Dto.class);
+                readedDto.getDtoAction(connectionListener, this);
+                log.info("readed dto: {}", readedDto);
+                updateActivity();
+            } catch (IOException | IllegalArgumentException e) {
+                disconnect();
+                connectionListener.onException(this, e);
+            }
         }
-
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
         if (!socket.isClosed()) {
+            //noinspection EmptyTryBlock
             try (PrintWriter writer1 = writer; BufferedReader reader1 = reader; Socket socket1 = socket) {
             } catch (IOException e) {
                 e.printStackTrace();
@@ -73,7 +75,7 @@ public class Connection {
         }
     }
 
-    public boolean isAvailable() {
+    public synchronized boolean isAvailable() {
         try {
             return reader.ready();
         } catch (IOException e) {
@@ -83,11 +85,11 @@ public class Connection {
         }
     }
 
-    public boolean isAuthorized() {
+    public synchronized boolean isAuthorized() {
         return login != null;
     }
 
-    public boolean isExpired() {
+    public synchronized boolean isExpired() {
         if (nonActivityConnectionLiveTime == null) {
             return false;
         } else {
@@ -95,12 +97,12 @@ public class Connection {
         }
     }
 
-    private void updateActivity() {
+    private synchronized void updateActivity() {
         lastActivityTime = System.currentTimeMillis();
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         if (isAuthorized()) {
             return login;
         } else {

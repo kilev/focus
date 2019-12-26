@@ -8,12 +8,12 @@ import ru.cft.focusstart.ConnectionListener;
 import java.util.List;
 
 @Value
-public class UserOnlineListDto implements Dto {
+public class UserOnlineDto implements Dto {
 
-    private final List<String> userInOnline;
+    private final List<String> userOnline;
 
-    public UserOnlineListDto(@JsonProperty("userInOnline") List<String> userInOnline) {
-        this.userInOnline = userInOnline;
+    public UserOnlineDto(@JsonProperty("userInOnline") List<String> userOnline) {
+        this.userOnline = userOnline;
     }
 
     @Override

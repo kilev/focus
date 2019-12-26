@@ -56,7 +56,7 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
     }
 
     @Override
-    public void onUserInOnlineList(List<String> userInOnlineList) {
+    public void onUserOnline(List<String> userOnline) {
 
     }
 

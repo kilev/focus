@@ -1,31 +1,31 @@
 package ru.cft.focusstart;
 
-import java.util.List;
+import ru.cft.focusstart.dto.*;
 
 public class ConnectionListenerAdapter implements ConnectionListener {
 
     @Override
-    public void onMessage(String login, String message) {
+    public void onMessage(MessageDto messageDto, Connection connection) {
 
     }
 
     @Override
-    public void onLoginRequest(String login, Connection connection) {
+    public void onLoginRequest(LoginRequestDto loginRequestDto, Connection connection) {
 
     }
 
     @Override
-    public void onLoginResponse(String login, boolean confirmed) {
+    public void onLoginResponse(LoginResponseDto loginResponseDto, Connection connection) {
 
     }
 
     @Override
-    public void onUserInOnlineList(List<String> userInOnlineList) {
+    public void onUserOnline(UserOnlineDto userOnlineDto, Connection connection) {
 
     }
 
     @Override
-    public void onDisconnectRequest(Connection connection) {
+    public void onDisconnectRequest(DisconnectRequestDto disconnectRequestDto, Connection connection) {
 
     }
 
