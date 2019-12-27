@@ -8,17 +8,17 @@ import ru.cft.focusstart.ConnectionListener;
 import java.util.Date;
 
 @Value
-public class MessageDto implements Dto {
+public class BroadCastMessageDto implements Dto {
 
     private final String author;
     private final String message;
     private final Long id;
     private final Date time;
 
-    public MessageDto(@JsonProperty("author") String author,
-                      @JsonProperty("message") String message,
-                      @JsonProperty("id") Long messageId,
-                      @JsonProperty("time") Date messageTime) {
+    public BroadCastMessageDto(@JsonProperty("author") String author,
+                               @JsonProperty("message") String message,
+                               @JsonProperty("id") Long messageId,
+                               @JsonProperty("time") Date messageTime) {
         this.author = author;
         this.message = message;
         this.id = messageId;
@@ -27,6 +27,6 @@ public class MessageDto implements Dto {
 
     @Override
     public void getDtoAction(ConnectionListener connectionListener, Connection connection) {
-        connectionListener.onMessage(this, connection);
+        connectionListener.onBroadcastMessage(this, connection);
     }
 }

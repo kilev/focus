@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.cft.focusstart.dto.CallBackPingDto;
 import ru.cft.focusstart.dto.Dto;
 
 import java.io.BufferedReader;
@@ -16,6 +17,7 @@ import java.net.Socket;
 public class Connection {
 
     private static final String UN_AUTHORIZED_LOGIN = "Anonymous";
+    private static final int CALLBACK_PING_TIMEOUT = 1000;
 
     private final Socket socket;
     private final PrintWriter writer;
@@ -38,6 +40,12 @@ public class Connection {
         writer = new PrintWriter(socket.getOutputStream(), true);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         lastActivityTime = System.currentTimeMillis();
+    }
+
+    public Connection reconect() throws IOException {
+        disconnect();
+        return new Connection(socket.getInetAddress().getHostAddress(), socket.getPort(), nonActivityConnectionLiveTime, connectionListener);
+
     }
 
     public synchronized void sendDto(Dto dto) {
@@ -82,6 +90,19 @@ public class Connection {
             disconnect();
             connectionListener.onException(this, e);
             return false;
+        }
+    }
+
+    public synchronized void checkConnection() {
+        long time = System.currentTimeMillis();
+        sendDto(new CallBackPingDto());
+        try {
+            Thread.sleep(CALLBACK_PING_TIMEOUT);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (time > lastActivityTime) {
+            disconnect();
         }
     }
 

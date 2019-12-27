@@ -5,12 +5,22 @@ import ru.cft.focusstart.dto.*;
 public class ConnectionListenerAdapter implements ConnectionListener {
 
     @Override
-    public void onMessage(MessageDto messageDto, Connection connection) {
+    public void onBroadcastMessage(BroadCastMessageDto messageDto, Connection connection) {
+
+    }
+
+    @Override
+    public void onClientMessage(ClientMessageDto clientMessageDto, Connection connection) {
 
     }
 
     @Override
     public void onLoginRequest(LoginRequestDto loginRequestDto, Connection connection) {
+
+    }
+
+    @Override
+    public void onLoginReconnect(LoginReconnectDto loginReconnectDto, Connection connection) {
 
     }
 
@@ -26,6 +36,16 @@ public class ConnectionListenerAdapter implements ConnectionListener {
 
     @Override
     public void onDisconnectRequest(DisconnectRequestDto disconnectRequestDto, Connection connection) {
+
+    }
+
+    @Override
+    public void onPing(PingDto pingDto, Connection connection) {
+
+    }
+
+    @Override
+    public void onCallBackPing(CallBackPingDto callBackPingDto, Connection connection) {
 
     }
 

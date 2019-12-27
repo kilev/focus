@@ -2,7 +2,7 @@ package ru.cft.focusstart;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.cft.focusstart.dto.MessageDto;
+import ru.cft.focusstart.dto.BroadCastMessageDto;
 
 import java.util.Date;
 
@@ -11,7 +11,7 @@ final class Message {
 
     private static final IdGenerator idGenerator = new IdGenerator();
 
-    static MessageDto create(String author, String message) {
-        return new MessageDto(author, message, idGenerator.getId(), new Date());
+    static BroadCastMessageDto create(String author, String message) {
+        return new BroadCastMessageDto(author, message, idGenerator.getId(), new Date());
     }
 }
