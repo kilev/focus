@@ -11,20 +11,20 @@ import java.util.concurrent.locks.ReentrantLock;
 class Storage {
 
     private final ReentrantLock lock = new ReentrantLock();
-    private final Condition nonEmpty = lock.newCondition();
-    private final Condition nonFull = lock.newCondition();
+    private final Condition availableToTakeCondition = lock.newCondition();
+    private final Condition availableToStoreCondition = lock.newCondition();
     private final BlockingQueue<Resource> resources = new LinkedBlockingQueue<>(PropertyManager.STORAGE_SIZE.getValue());
 
     void add(Resource resource) {
         lock.lock();
         try {
             while (!resources.offer(resource)) {
-                log.info("{}: склад полон, поток переходит в режим ожидания.", Thread.currentThread().getName());
-                nonFull.await();
-                log.info("{}: вышел из режима ожидания.", Thread.currentThread().getName());
+                log.info("склад полон, поток переходит в режим ожидания.");
+                availableToStoreCondition.await();
+                log.info("вышел из режима ожидания.");
             }
-            log.info("{}: поместил: {}.", Thread.currentThread().getName(), resource.getId());
-            nonEmpty.signal();
+            log.info("поместил: {}.", resource.getId());
+            availableToTakeCondition.signal();
         } catch (InterruptedException e) {
             log.error("Поток остановлен.", e);
         } finally {
@@ -37,13 +37,13 @@ class Storage {
         try {
             Resource resource = resources.poll();
             while (resource == null) {
-                log.info("{}: склад пуст, поток переходит в режим ожидания.", Thread.currentThread().getName());
-                nonEmpty.await();
-                log.info("{}: вышел из режима ожидания.", Thread.currentThread().getName());
+                log.info("склад пуст, поток переходит в режим ожидания.");
+                availableToTakeCondition.await();
+                log.info("вышел из режима ожидания.");
                 resource = resources.poll();
             }
-            log.info("{}: забрал ресурс {}.", Thread.currentThread().getName(), resource.getId());
-            nonFull.signal();
+            log.info("забрал ресурс {}.", resource.getId());
+            availableToStoreCondition.signal();
             return resource;
         } catch (InterruptedException e) {
             log.error("Поток остановлен.", e);
