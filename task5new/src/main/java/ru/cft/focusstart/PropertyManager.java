@@ -28,8 +28,10 @@ enum PropertyManager {
             Properties properties = new Properties();
             properties.load(inputStream);
             return Integer.valueOf(properties.getProperty(propertyName));
-        } catch (IOException | NullPointerException e) {
+        } catch (NullPointerException e) {
             log.error("Не удалось найти файл конфигураций: {}", PROPERTIES_FILE_NAME, e);
+        } catch (IOException e) {
+            log.error("Не корректный файл конфигураций: {}", PROPERTIES_FILE_NAME, e);
         }
         return null;
     }
