@@ -1,6 +1,5 @@
 package ru.cft.focusstart;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +11,8 @@ import java.util.Properties;
 @Getter
 class Property {
 
+    private static final String PROPERTIES_FILE_NAME = "server.properties";
+
     private int requestMonitoringThreadCount;
     private int requestMonitoringPeriod;
     private int sendExecutorThreadCount;
@@ -19,8 +20,6 @@ class Property {
     private int serverPort;
     private long nonActivityConnectionLiveTime;
     private int connectionCollectCheckTime;
-    @Getter(AccessLevel.PRIVATE)
-    private static final String PROPERTIES_FILE_NAME = "server.properties";
 
     Property() {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {

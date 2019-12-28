@@ -42,7 +42,7 @@ public class Connection {
         lastActivityTime = System.currentTimeMillis();
     }
 
-    public Connection reconect() throws IOException {
+    public Connection reconnect() throws IOException {
         disconnect();
         return new Connection(socket.getInetAddress().getHostAddress(), socket.getPort(), nonActivityConnectionLiveTime, connectionListener);
 

@@ -14,6 +14,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ServerCommunicator extends ConnectionListenerAdapter {
 
+    private static final int LISTEN_SERVER_PERIOD_MILLIS = 200;
+    private static final int SEND_PING_TO_SERVER_PERIOD_MILLIS = 5;
+
     private final MainView view;
     private final MessageReceiver messageReceiver;
     private ScheduledExecutorService serverListener;
@@ -23,7 +26,7 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
 
     public ServerCommunicator(MainView view) {
         this.view = view;
-        messageReceiver = new MessageReceiver(1000, view);
+        messageReceiver = new MessageReceiver(view);
     }
 
     public void newConnection(String host, Integer port, String login) {
@@ -33,13 +36,12 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
                 disconnect();
             }
             connection = new Connection(host, port, null, this);
-            Thread.sleep(400);
             messageReceiver.start();
             startListenServer();
             startPingServer();
             sendDto(new LoginRequestDto(login));
-        } catch (IOException | InterruptedException e) {
-            log.error("socket connection error", e);
+        } catch (IOException e) {
+            log.error("Ошибка соединений с сервером.", e);
             view.showInfoPane("Не удалось подключиться к серверу");
         }
     }
@@ -101,15 +103,14 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
     private void reconnect() {
         try {
             String login = connection.getLogin();
-            connection = connection.reconect();
-            Thread.sleep(400);
+            connection = connection.reconnect();
             messageReceiver.start();
             startListenServer();
             startPingServer();
             sendDto(new LoginReconnectDto(login));
-            Thread.sleep(1000);
+//            Thread.sleep(1000);
             serverIsDisconnected = false;
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             view.showInfoPane("Не удалось подключиться к серверу.");
         }
     }
@@ -120,12 +121,12 @@ public class ServerCommunicator extends ConnectionListenerAdapter {
             if (connection.isAvailable()) {
                 connection.callRequestAction();
             }
-        }, 0, 200, TimeUnit.MILLISECONDS);
+        }, 0, LISTEN_SERVER_PERIOD_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     private void startPingServer() {
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
-        pingExecutor.scheduleAtFixedRate(this::pingServer, 0, 5, TimeUnit.SECONDS);
+        pingExecutor.scheduleAtFixedRate(this::pingServer, 0, SEND_PING_TO_SERVER_PERIOD_MILLIS, TimeUnit.SECONDS);
     }
 
     private void pingServer() {

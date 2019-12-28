@@ -25,11 +25,11 @@ import java.util.concurrent.*;
 class MessageReceiver {
 
     private static final int FROZEN_MESSAGE_QUEUE_CAPACITY = 10;
-    private static final int CHECK_FROZEN_MESSAGE_TIMEOUT = 400;
+    private static final int FREEZE_MESSAGE_TIMEOUT_MILLIS = 1000;
+    private static final int CHECK_FROZEN_MESSAGE_TIMEOUT_MILLIS = 400;
 
     private final BlockingQueue<FrozenMessage> frozenMessages = new PriorityBlockingQueue<>(FROZEN_MESSAGE_QUEUE_CAPACITY,
             (o1, o2) -> o2.getMessageDto().getId().compareTo(o1.getMessageDto().getId()));
-    private final long freezeTimeOut;
     private final MainView view;
     private Long lastMessageId = null;
     private ScheduledExecutorService frozenTimeCheckService;
@@ -37,9 +37,9 @@ class MessageReceiver {
     void start() {
         frozenTimeCheckService = Executors.newSingleThreadScheduledExecutor();
         frozenTimeCheckService.scheduleAtFixedRate(() -> frozenMessages.stream()
-                .filter(frozenMessage -> frozenMessage.getFreezeTime() + freezeTimeOut > System.currentTimeMillis())
+                .filter(frozenMessage -> frozenMessage.getFreezeTime() + FREEZE_MESSAGE_TIMEOUT_MILLIS > System.currentTimeMillis())
                 .peek(frozenMessage -> updateId(frozenMessage.getMessageDto().getId()))
-                .forEach(frozenMessage -> sendToView(frozenMessage.getMessageDto())), 0, CHECK_FROZEN_MESSAGE_TIMEOUT, TimeUnit.MILLISECONDS);
+                .forEach(frozenMessage -> sendToView(frozenMessage.getMessageDto())), 0, CHECK_FROZEN_MESSAGE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     void stop() {
